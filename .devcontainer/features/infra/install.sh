@@ -17,7 +17,7 @@ if [ "${USELOCALSDK}" = "true" ]; then
   echo "🐍 Using local SDK: skipping pip install in feature. Will install via postCreateCommand."
 else
   echo "🐍 Installing OpenFactory-SDK from GitHub..."
-  pip install --no-cache-dir git+https://github.com/openfactoryio/openfactory-sdk.git
+  pip install --no-cache-dir "git+https://github.com/openfactoryio/openfactory-sdk.git@${OPENFACTORY_VERSION}"
 fi
 
 # Install OpenFactory using OPENFACTORY_VERSION from the feature option
