@@ -7,12 +7,15 @@ on:
 
 jobs:
   deploy:
-    if: ${{ github.ref == 'refs/heads/main' }}
+    # Check that the release was made from 'main', or allows manual run
+    if: ${{ github.event.release.target_commitish == 'main' || github.event_name == 'workflow_dispatch' }}
+
     runs-on: ubuntu-latest
     permissions:
       contents: write
       pull-requests: write
       packages: write
+
     steps:
       - uses: actions/checkout@v4
 
