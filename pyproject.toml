@@ -12,6 +12,7 @@ dependencies = [
 dev = [
     "flake8",
     "tomlkit",
+    "OpenFactory @ git+https://github.com/openfactoryio/openfactory-core.git@main",
 ]
 
 [project.scripts]
