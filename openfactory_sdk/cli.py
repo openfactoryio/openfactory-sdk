@@ -6,7 +6,7 @@ Help: openfactory-sdk --help
 
 Becomes available after installing OpenFactory-SDK like
 
-> pip install git+https://github.com/Demo-Smart-Factory-Concordia-University/OpenFactory-SDK.git
+> pip install git+https://github.com/openfactoryio/openfactory-sdk.git
 
 or (during development, after cloning the repository locally)
 
@@ -25,6 +25,7 @@ def init_environment() -> bool:
     user_notify.setup(
         success_msg=lambda msg: print(f"{Config.OFA_SUCCSESS}{msg}{Config.OFA_END}"),
         fail_msg=lambda msg: print(f"{Config.OFA_FAIL}{msg}{Config.OFA_END}"),
+        warning_msg=lambda msg: print(f"{Config.OFA_WARNING}{msg}{Config.OFA_END}"),
         info_msg=print
     )
 
