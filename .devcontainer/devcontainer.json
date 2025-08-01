@@ -1,6 +1,6 @@
 {
   "name": "OpenFactory-SDK Dev Container",
-  "image": "mcr.microsoft.com/devcontainers/python:3.10",
+  "image": "mcr.microsoft.com/devcontainers/python:3.13",
   "features": {
     "docker-in-docker": {
       "version": "latest"
