@@ -3,11 +3,6 @@ set -e
 
 echo "🔧 Installing OpenFactory SDK feature..."
 
-
-echo "🧪 DEBUG: _USELOCALSDK='${_USELOCALSDK}'"
-echo "🧪 DEBUG: USELOCALSDK='${USELOCALSDK}'"
-
-
 echo "📁 Copying infrastructure files..."
 mkdir -p "/usr/local/share/openfactory-sdk/openfactory-infra"
 cp -r "$(dirname "$0")/assets/sdk-infra/." "/usr/local/share/openfactory-sdk/openfactory-infra/"
@@ -30,6 +25,7 @@ CONTAINER_IP=$(ip -4 addr show eth0 2>/dev/null | grep -oP '(?<=inet\s)\d+(\.\d+
 export CONTAINER_IP
 export KAFKA_BROKER="${KAFKA_BROKER:-localhost:9092,broker:29092}"
 export KSQLDB_URL="${KSQLDB_URL:-http://${CONTAINER_IP}:8088}"
+export DEPLOYMENT_PLATFORM="docker"
 EOF
 
 chmod +x /etc/profile.d/00-openfactory-sdk.sh
