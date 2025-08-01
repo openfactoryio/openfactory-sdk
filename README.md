@@ -59,11 +59,13 @@ For advanced use cases, the feature also exposes the following optional settings
 
   The environment variables and aliases are available in every Bash terminal inside your dev container.
 
-* Add the `openfactory-sdk` command
+* Configure the environment to deploy to the OpenFactory infrastructure inside the development container
 
-  This command allows to deploy OpenFactory assets (devices, applications) on the development OpenFactory infrastructure. Help about available commands can be obtained with
-  ```
-  openfactory-sdk --help
+  To deploy OpenFactory assets such as devices or applications on the development infrastructure, use the `ofa` command-line tool provided by OpenFactory.
+
+  You can get help and explore available commands by running:
+  ```bash
+  ofa --help
   ```
 
 ## 📦 Use cases
