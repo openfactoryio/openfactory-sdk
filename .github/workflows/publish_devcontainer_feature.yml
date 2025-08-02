@@ -19,6 +19,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install dependencies for version bump script
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: |
+          pip install tomlkit
+
       - name: Bump to 'dev' version on manual dispatch
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
