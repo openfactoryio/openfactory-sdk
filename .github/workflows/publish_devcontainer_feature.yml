@@ -19,17 +19,36 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup tools for manual dispatch
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: |
+          npm install -g @devcontainers/cli
+          pip install tomlkit
+
       - name: Bump to 'dev' version on manual dispatch
+        id: bump_version
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
           echo "Manual workflow dispatch — bumping version to 'dev'"
-          pip install tomlkit
-          python3 scripts/bump_version.py dev
+          VERSION=$(python3 scripts/bump_version.py dev | tail -n1)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "Bumped and publishing dev version: $VERSION"
 
-      - name: "Publish Features"
+      - name: Publish Features
         uses: devcontainers/action@v1
         with:
           publish-features: "true"
           base-path-to-features: ".devcontainer/features"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Copy Feature to `latest`
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: |
+          echo "Labeling version ${{ env.VERSION }} as latest"
+          devcontainer features copy \
+            ghcr.io/openfactoryio/openfactory-sdk/infra:${{ env.VERSION }} \
+            ghcr.io/openfactoryio/openfactory-sdk/infra:latest \
+            --registry ghcr.io
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
