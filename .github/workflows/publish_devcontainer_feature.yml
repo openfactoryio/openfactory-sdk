@@ -29,10 +29,10 @@ jobs:
         id: bump_version
         run: |
           echo "Manual workflow dispatch — bumping version to 'dev'"
-          VERSION=$(python3 scripts/bump_version.py 0.4.0 | tail -n1)
+          VERSION=$(python3 scripts/bump_version.py dev | tail -n1)
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-      - name: "Publish Features"
+      - name: Publish Features
         uses: devcontainers/action@v1
         with:
           publish-features: "true"
@@ -40,13 +40,16 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Tag dev version as 'dev' in GHCR
+      - name: Install ORAS CLI
         if: ${{ github.event_name == 'workflow_dispatch' }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_ACTOR: ${{ github.actor }}
         run: |
-          echo "$GITHUB_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
-          docker pull ghcr.io/openfactoryio/openfactory-sdk/infra:$VERSION
-          docker tag ghcr.io/openfactoryio/openfactory-sdk/infra:$VERSION ghcr.io/openfactoryio/openfactory-sdk/infra:dev
-          docker push ghcr.io/openfactoryio/openfactory-sdk/infra:dev
+          curl -LO https://github.com/oras-project/oras/releases/latest/download/oras-linux-amd64.tar.gz
+          tar -xzf oras-linux-amd64.tar.gz
+          sudo mv oras /usr/local/bin/
+
+      - name: Tag as ‘dev’
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: |
+          echo "$GITHUB_TOKEN" | oras login ghcr.io --builder docker
+          oras tag ghcr.io/openfactoryio/openfactory-sdk/infra:"${{ env.VERSION }}" \
+            "ghcr.io/openfactoryio/openfactory-sdk/infra:dev"
