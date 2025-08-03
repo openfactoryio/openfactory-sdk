@@ -10,24 +10,27 @@ Usage:
     python scripts/bump_version.py <new_version>
 
 Arguments:
-    <new_version> — A semantic version string (e.g., 0.3.1) or the special keyword "dev"
+    <new_version> — A semantic version string (e.g., 0.4.0), or the special keyword "dev"
 
 Behavior:
 - If <new_version> is a semantic version (e.g., 0.4.0):
     • Sets that version in both pyproject.toml and devcontainer-feature.json
-    • Sets openfactory-version.default to "v<new_version>"
+    • Sets openfactory-version.default in the JSON to "v<new_version>"
 
 - If <new_version> is "dev":
-    • Converts the current version (e.g., 0.4.0) to "0.4.0-dev.1"
+    • Transforms the current version in both files to "<base>-dev.1"
+      (e.g., from 0.4.0 → 0.4.0-dev.1)
     • Sets openfactory-version.default in the JSON to "main"
 
-    This is used to configure the project to track the latest development
-    version of dependencies (e.g., the main branch of openfactory-core) during development.
-    It is used by the workflow publishing the feature to allow for a dev version of the feature.
+    This is used to create a consistent pre-release version (used during active development),
+    allowing downstream components to rely on a stable `dev` tag for CI/CD integration.
 
 Notes:
+    - Will exit with an error if expected fields are missing or files do not exist
+    - Prints the final version string to stdout (for use in GitHub Actions)
+
+Dependency:
     - Requires `tomlkit` (install with `pip install tomlkit`)
-    - Will exit with an error if expected fields are missing or files don't exist
 """
 
 from pathlib import Path
@@ -44,7 +47,10 @@ def bump_pyproject_version(version: str) -> None:
     Otherwise, sets the version to the provided semantic version.
 
     Args:
-        version (str): The new version string, e.g., "0.4.0" or "dev".
+        version (str): The new version string, e.g., "0.4.0" or the special keyword "dev".
+
+    Returns:
+        str: The final version string written to pyproject.toml
 
     Raises:
         SystemExit: If the pyproject.toml file is missing or malformed.
@@ -76,21 +82,22 @@ def bump_pyproject_version(version: str) -> None:
         f.write(dumps(toml_doc))
 
     print(f"[pyproject.toml] Version updated: {old_version} → {new_version}")
+    return new_version
 
 
 def bump_devcontainer_version(version: str) -> None:
     """
-    Update the version in devcontainer-feature.json.
+    Update the version and openfactory-version.default in devcontainer-feature.json.
 
     If the version is "dev", it transforms the current version to "<base>-dev.1"
     and sets openfactory-version.default to "main". Otherwise, it sets the version
     and default tag based on the semantic version provided.
 
     Args:
-        version (str): The new version string, e.g., "0.4.0" or "dev".
+        version (str): The new version string, e.g., "0.4.0" or the special keyword "dev".
 
     Raises:
-        SystemExit: If the JSON file is missing or expected fields are not found.
+        SystemExit: If the JSON file is missing or required fields are not found.
     """
     json_path = (
         Path(__file__).resolve().parent.parent /
@@ -136,5 +143,8 @@ if __name__ == "__main__":
         sys.exit(1)
 
     new_version = sys.argv[1]
-    bump_pyproject_version(new_version)
+    final_version = bump_pyproject_version(new_version)
     bump_devcontainer_version(new_version)
+
+    # print final version for workflow to capture
+    print(final_version)
