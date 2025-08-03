@@ -18,8 +18,7 @@ Behavior:
     • Sets openfactory-version.default to "v<new_version>"
 
 - If <new_version> is "dev":
-    • Appends "-dev" to the current version in pyproject.toml (unless already suffixed)
-    • Appends "-dev" to the current version in devcontainer-feature.json
+    • Converts the current version (e.g., 0.4.0) to "0.4.0-dev.1"
     • Sets openfactory-version.default in the JSON to "main"
 
     This is used to configure the project to track the latest development
@@ -41,7 +40,7 @@ def bump_pyproject_version(version: str) -> None:
     """
     Update the version in pyproject.toml.
 
-    If the version is "dev", it appends "-dev" to the current version unless already present.
+    If the version is "dev", it transforms the current version to "<base>-dev.1".
     Otherwise, sets the version to the provided semantic version.
 
     Args:
@@ -66,10 +65,8 @@ def bump_pyproject_version(version: str) -> None:
     old_version = toml_doc["project"]["version"]
 
     if version == "dev":
-        if old_version.endswith("-dev"):
-            new_version = old_version
-        else:
-            new_version = f"{old_version}-dev"
+        base_version = old_version.split("-")[0]
+        new_version = f"{base_version}-dev.1"
     else:
         new_version = version
 
@@ -85,9 +82,9 @@ def bump_devcontainer_version(version: str) -> None:
     """
     Update the version in devcontainer-feature.json.
 
-    If the version is "dev", it appends "-dev" to the current version and sets
-    openfactory-version.default to "main". Otherwise, it sets the version and default
-    tag based on the semantic version provided.
+    If the version is "dev", it transforms the current version to "<base>-dev.1"
+    and sets openfactory-version.default to "main". Otherwise, it sets the version
+    and default tag based on the semantic version provided.
 
     Args:
         version (str): The new version string, e.g., "0.4.0" or "dev".
@@ -117,7 +114,9 @@ def bump_devcontainer_version(version: str) -> None:
     old_default = data["options"]["openfactory-version"]["default"]
 
     if version == "dev":
-        data["version"] = f"{old_version}-dev"
+        base_version = old_version.split("-")[0]
+        new_version = f"{base_version}-dev.1"
+        data["version"] = new_version
         data["options"]["openfactory-version"]["default"] = "main"
     else:
         data["version"] = version
