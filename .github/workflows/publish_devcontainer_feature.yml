@@ -41,10 +41,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Publish Features with explicit latest tag (CLI)
+      - name: Publish Features with explicit dev tag (CLI)
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
-          echo "Publishing version $VERSION with explicit latest tag"
-          devcontainer features publish .devcontainer/features/infra --version $VERSION,latest --registry ghcr.io --namespace openfactoryio
+          echo "Publishing version $VERSION with explicit dev tag"
+          devcontainer features publish .devcontainer/features/infra --version $VERSION,dev --registry ghcr.io --namespace openfactoryio
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
