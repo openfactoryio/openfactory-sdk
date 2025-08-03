@@ -19,6 +19,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Publish feature (release)
+        if: ${{ github.event_name == 'release' }}
+        uses: devcontainers/action@v1
+        with:
+          publish-features: "true"
+          base-path-to-features: ".devcontainer/features"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Install devcontainers CLI
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: npm install -g @devcontainers/cli
+
       - name: Install dependencies for version bump script
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
@@ -29,27 +42,12 @@ jobs:
         id: bump_version
         run: |
           echo "Manual workflow dispatch — bumping version to 'dev'"
-          VERSION=$(python3 scripts/bump_version.py dev | tail -n1)
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          python3 scripts/bump_version.py dev
 
-      - name: Publish Features
-        uses: devcontainers/action@v1
-        with:
-          publish-features: "true"
-          base-path-to-features: ".devcontainer/features"
+      - name: Publish feature with 'dev' tag (manual dispatch)
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: |
+          devcontainer features publish --path .devcontainer/features --tag dev
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Install ORAS CLI
-        if: ${{ github.event_name == 'workflow_dispatch' }}
-        run: |
-          curl -LO https://github.com/oras-project/oras/releases/latest/download/oras-linux-amd64.tar.gz
-          tar -xzf oras-linux-amd64.tar.gz
-          sudo mv oras /usr/local/bin/
-
-      - name: Tag as ‘dev’
-        if: ${{ github.event_name == 'workflow_dispatch' }}
-        run: |
-          echo "$GITHUB_TOKEN" | oras login ghcr.io --builder docker
-          oras tag ghcr.io/openfactoryio/openfactory-sdk/infra:"${{ env.VERSION }}" \
-            "ghcr.io/openfactoryio/openfactory-sdk/infra:dev"
+          VERSION: ${{ env.VERSION }}
