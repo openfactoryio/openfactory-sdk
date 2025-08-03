@@ -19,31 +19,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Publish feature (release)
-        if: ${{ github.event_name == 'release' }}
+      - name: Bump to 'dev' version on manual dispatch
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: |
+          echo "Manual workflow dispatch — bumping version to 'dev'"
+          pip install tomlkit
+          python3 scripts/bump_version.py dev
+
+      - name: "Publish Features"
         uses: devcontainers/action@v1
         with:
           publish-features: "true"
           base-path-to-features: ".devcontainer/features"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Setup tools for manual dispatch
-        if: ${{ github.event_name == 'workflow_dispatch' }}
-        run: |
-          npm install -g @devcontainers/cli
-          pip install tomlkit
-
-      - name: Bump to 'dev' version on manual dispatch
-        if: ${{ github.event_name == 'workflow_dispatch' }}
-        id: bump_version
-        run: |
-          echo "Manual workflow dispatch — bumping version to 'dev'"
-          python3 scripts/bump_version.py dev
-
-      - name: Publish feature with 'dev' tag (manual dispatch)
-        if: ${{ github.event_name == 'workflow_dispatch' }}
-        run: |
-          devcontainer features publish .devcontainer/features --tag dev --namespace openfactoryio/openfactory-sdk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
