@@ -28,13 +28,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
-      - name: Install devcontainers CLI
-        if: ${{ github.event_name == 'workflow_dispatch' }}
-        run: npm install -g @devcontainers/cli
-
-      - name: Install dependencies for version bump script
+      - name: Setup tools for manual dispatch
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
+          npm install -g @devcontainers/cli
           pip install tomlkit
 
       - name: Bump to 'dev' version on manual dispatch
@@ -47,7 +44,6 @@ jobs:
       - name: Publish feature with 'dev' tag (manual dispatch)
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
-          devcontainer features publish --path .devcontainer/features --tag dev
+          devcontainer features publish .devcontainer/features --tag dev --namespace openfactoryio/openfactory-sdk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: ${{ env.VERSION }}
