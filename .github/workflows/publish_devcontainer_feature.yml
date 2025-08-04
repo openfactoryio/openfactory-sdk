@@ -19,32 +19,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup environment for manual dispatch
-        if: ${{ github.event_name == 'workflow_dispatch' }}
-        run: |
-          pip install tomlkit
-          npm install -g @devcontainers/cli
-
       - name: Bump to 'dev' version on manual dispatch
-        id: bump_version
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
-          VERSION=$(python3 scripts/bump_version.py dev | tail -n1)
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-          echo "Bumbed to $VERSION"
+          echo "Manual workflow dispatch — bumping version to 'dev'"
+          pip install tomlkit
+          python3 scripts/bump_version.py dev
 
-      - name: Publish Features (normal)
+      - name: "Publish Features"
         uses: devcontainers/action@v1
         with:
           publish-features: "true"
           base-path-to-features: ".devcontainer/features"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Publish Features with explicit dev tag (CLI)
-        if: ${{ github.event_name == 'workflow_dispatch' }}
-        run: |
-          echo "Publishing version $VERSION with explicit dev tag"
-          devcontainer features publish .devcontainer/features/infra --version $VERSION,dev --registry ghcr.io --namespace openfactoryio
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
