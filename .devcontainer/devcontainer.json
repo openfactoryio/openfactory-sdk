@@ -2,9 +2,7 @@
   "name": "OpenFactory-SDK Dev Container",
   "image": "mcr.microsoft.com/devcontainers/python:3.13",
   "features": {
-    "docker-in-docker": {
-      "version": "latest"
-    },
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
     "./features/infra": {
       "useLocalSdk": true,
       "openfactory-version": "main"
