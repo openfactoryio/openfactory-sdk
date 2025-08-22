@@ -34,7 +34,7 @@ echo "🛠️ Adding helpful aliases to /etc/bash.bashrc..."
 {
   echo '# OpenFactory-SDK aliases'
   echo 'alias ksql="docker exec -it ksqldb-cli ksql http://ksqldb-server:8088"'
-  echo 'alias spinup="docker compose -f /usr/local/share/openfactory-sdk/openfactory-infra/docker-compose.yml up -d"'
+  echo 'alias spinup="docker compose -f /usr/local/share/openfactory-sdk/openfactory-infra/docker-compose.yml up -d; ofa setup-kafka --ksqldb-server $KSQLDB_URL"'
   echo 'alias teardown="docker compose -f /usr/local/share/openfactory-sdk/openfactory-infra/docker-compose.yml down"'
 } >> /etc/bash.bashrc
 
