@@ -18,9 +18,7 @@ Add the following to your `.devcontainer/devcontainer.json`:
 ```json
 {
   "features": {
-    "docker-in-docker": {
-      "version": "latest"
-    },
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
     "ghcr.io/openfactoryio/openfactory-sdk/infra:latest"
   }
 }
