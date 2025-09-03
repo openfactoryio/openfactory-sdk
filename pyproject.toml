@@ -13,6 +13,7 @@ dev = [
     "flake8",
     "tomlkit",
     "OpenFactory @ git+https://github.com/openfactoryio/openfactory-core.git@main",
+    "MTCAdapters @ git+https://github.com/Demo-Smart-Factory-Concordia-University/MTCAdapters.git",
 ]
 
 [project.scripts]
