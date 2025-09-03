@@ -1,6 +1,6 @@
 {
   "name": "OpenFactory-SDK Dev Container",
-  "image": "mcr.microsoft.com/devcontainers/python:3.13",
+  "image": "mcr.microsoft.com/devcontainers/python:3.13-bookworm",
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:2": {},
     "./features/infra": {
