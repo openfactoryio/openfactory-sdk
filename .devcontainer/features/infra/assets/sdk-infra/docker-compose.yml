@@ -54,7 +54,7 @@ services:
     networks:
       - factory-net
     healthcheck:
-      test: ["CMD-SHELL", "nc -z localhost 8088 || exit 1"]
+      test: ["CMD-SHELL", "curl -f http://localhost:8088/info || exit 1"]
       start_period: 15s
       interval: 5s
       timeout: 10s
