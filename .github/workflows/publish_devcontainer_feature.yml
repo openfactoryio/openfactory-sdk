@@ -22,10 +22,11 @@ jobs:
       - name: Bump to unique dev version on manual dispatch
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
-          VERSION="0.0.0-dev.${{ github.sha::7 }}"
+          SHORT_SHA=${GITHUB_SHA::7}
+          VERSION="0.0.0-dev.$SHORT_SHA"
           echo "Manual workflow dispatch — setting version to $VERSION"
           pip install tomlkit
-          python3 scripts/bump_version.py $VERSION
+          python3 scripts/bump_version.py "$VERSION"
 
       - name: "Publish Features"
         uses: devcontainers/action@v1
