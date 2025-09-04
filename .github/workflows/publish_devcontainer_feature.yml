@@ -19,12 +19,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Bump to 'dev' version on manual dispatch
+      - name: Bump to unique dev version on manual dispatch
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
-          echo "Manual workflow dispatch — bumping version to 'dev'"
+          echo "Manual workflow dispatch — setting version to dev-${{ github.sha }}"
           pip install tomlkit
-          python3 scripts/bump_version.py dev
+          python3 scripts/bump_version.py dev-${{ github.sha }}
 
       - name: "Publish Features"
         uses: devcontainers/action@v1
