@@ -25,7 +25,7 @@ echo "🛠️ Setting container IP address and environment variables..."
 cat << 'EOF' >> /etc/profile.d/00-openfactory-sdk.sh
 CONTAINER_IP=$(ip -4 addr show eth0 2>/dev/null | grep -oP '(?<=inet\s)\d+(\.\d+){3}' || hostname -i | awk '{print $1}')
 export CONTAINER_IP
-export KAFKA_BROKER="${KAFKA_BROKER:-localhost:9092,broker:29092}"
+export KAFKA_BROKER="${KAFKA_BROKER:-${CONTAINER_IP}:9092,broker:29092}"
 export KSQLDB_URL="${KSQLDB_URL:-http://${CONTAINER_IP}:8088}"
 export DEPLOYMENT_PLATFORM="docker"
 EOF
