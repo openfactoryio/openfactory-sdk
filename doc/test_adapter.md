@@ -12,12 +12,14 @@ devices:
   my-device:
     uuid: <device-uuid>
 
-    agent:
-      port: <agent-port>
-      device_xml: <device-xml>
-      adapter:
-        ip: <adapter-ip>
-        port: <adapter-port>
+    connector:
+      type: mtconnect
+      agent:
+        port: <agent-port>
+        device_xml: <device-xml>
+        adapter:
+          ip: <adapter-ip>
+          port: <adapter-port>
 ```
 The `agent-port` can be freely chosen and will be exposed for accessing the MTConnect agent.
 The `<device-xml>` is the file with the MTConnect device model.
