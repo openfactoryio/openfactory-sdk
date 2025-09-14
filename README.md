@@ -44,7 +44,7 @@ For advanced use cases, the feature also exposes the following optional settings
 * Define these environment variables:
   ```
   CONTAINER_IP=<DEV_CONTAINER-IP>
-  KAFKA_BROKER=localhost:9092,broker:29092
+  KAFKA_BROKER=$CONTAINER_IP:9092,broker:29092
   KSQLDB_URL=http://$CONTAINER_IP:8088
   ```
 
