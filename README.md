@@ -9,21 +9,61 @@ The **OpenFactory-SDK** provides tools to develop and test [OpenFactory](https:/
 
 ## 🐳 Deploy OpenFactory-SDK in a Dev Container
 
-The SDK includes a Dev Container **Feature** that automatically sets up the OpenFactory infrastructure inside your development environment.
+The SDK includes a Dev Container **Feature** that automatically sets up a simulated OpenFactory infrastructure inside your development environment.
 
-### ✨ Usage
+The simulated infrastructure can be deployed with:
+```bash
+spinup
+```
+and torn down with:
+```bash
+teardown
+```
 
-Add the following to your `.devcontainer/devcontainer.json`:
+### 🚀 Usage
+
+This section describes how to use the OpenFactory SDK feature in your devcontainer.
+
+#### 1️⃣ OpenFactory Application Developers
+
+These developers are building OpenFactory applications for a specific OpenFactory version. 
+They should **pin the SDK feature** to match the OpenFactory version running in their factory.
+
+Example:
 
 ```json
 {
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:2": {},
-    "ghcr.io/openfactoryio/openfactory-sdk/infra:latest"
+    "ghcr.io/openfactoryio/openfactory-sdk/infra:0.4.2": {}
   }
 }
 ```
-This setup works out of the box with sensible defaults and requires no configuration in most cases.
+
+> 💡 **Note:** Version pinning ensures the SDK is the one for their specific OpenFactory version.
+
+#### 2️⃣ OpenFactory Core Developers
+
+These developers contribute to OpenFactory itself.
+They usually want to use the **latest development version** of the SDK feature, and the latest OpenFactory version, which is `main`.
+
+Example:
+
+```json
+{
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/openfactoryio/openfactory-sdk/infra:0.0.0-dev.05580d9": {
+      "openfactory-version": "main"
+    }
+  }
+}
+```
+
+> 📝 **Note:** The latest development version of the SDK feature can be found [here](https://github.com/openfactoryio/openfactory-sdk/pkgs/container/openfactory-sdk%2Finfra).
+
+
+### ⚙️ Optional Settings
 
 For advanced use cases, the feature also exposes the following optional settings:
 
@@ -32,11 +72,11 @@ For advanced use cases, the feature also exposes the following optional settings
 | `openfactory-version` | Git ref (branch, tag, or commit) of OpenFactory Core to install | string  | *(matches feature version)* |
 | `useLocalSdk`         | Use the local SDK source code instead of installing from GitHub | boolean | `false`                     |
 
-> 📝 **Note:** The default `openfactory-version` is automatically set to the OpenFactory Core version that this SDK feature was developed and tested against. You typically don’t need to override it unless you're testing against a different core version.
+> 📝 **Note:** The default `openfactory-version` is automatically set to the OpenFactory Core version that this SDK feature was developed and tested against. Most users do not need to override it.
 
 ### ✅ What This Feature Does
 
-* Install OpenFactory with the desired version
+* Install OpenFactory with the desired version (matching the feature version)
 
 * Install the OpenFactory SDK
 
