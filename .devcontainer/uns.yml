@@ -1,0 +1,7 @@
+# minimal UNS
+namespace_structure:
+    - inc: OpenFactory
+    - asset: ANY
+    - attribute: ANY
+
+uns_template: "inc/asset/attribute"
