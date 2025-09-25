@@ -5,47 +5,52 @@
 
 The **OpenFactory-SDK** provides tools to develop and test [OpenFactory](https://github.com/openfactoryio) applications in a simplified development environment. Instead of requiring a full OpenFactory and Kafka cluster setup, this SDK uses lightweight Docker containers to simulate the necessary infrastructure.
 
----
+The SDK is delivered as a set of **Dev Container Features** that can be easily added to your development environment.
 
-## 🐳 Deploy OpenFactory-SDK in a Dev Container
+## 🛠 Features
 
-The SDK includes a Dev Container **Feature** that automatically sets up a simulated OpenFactory infrastructure inside your development environment.
+Currently, the SDK provides the following Dev Container features:
 
-The simulated infrastructure can be deployed with:
-```bash
-spinup
-```
-and torn down with:
-```bash
-teardown
-```
+| Feature ID        | Description                                                       |
+| ----------------- | ----------------------------------------------------------------- |
+| `infra`           | Simulates the OpenFactory infrastructure (Kafka Cluster + ksqlDB) |
+| `opcua-connector` | Deploys an OpenFactory OPC UA Connector for application testing   |
 
-### 🚀 Usage
+Each feature can be configured independently and further combined, depending on your development needs.
 
-This section describes how to use the OpenFactory SDK feature in your devcontainer.
+## 🐳 Using OpenFactory-SDK in a Dev Container
 
-#### 1️⃣ OpenFactory Application Developers
+Once installed, the features allow you to start and stop infrastructure and OPC UA Connector services via shell aliases.
 
-These developers are building OpenFactory applications for a specific OpenFactory version. 
-They should **pin the SDK feature** to match the OpenFactory version running in their factory.
+| Feature           | Start Command        | Stop Command           |
+| ----------------- | -------------------- | ---------------------- |
+| OpenFactory Infra | `spinup`             | `teardown`             |
+| OPC UA Connector  | `opcua-connector-up` | `opcua-connector-down` |
 
-Example:
+
+## 🚀 Usage
+
+### 1️⃣ OpenFactory Application Developers
+
+These developers are building OpenFactory applications for a **specific OpenFactory version**. They should **pin the SDK feature version** to match the version running in their factory.
+
+Example `.devcontainer/devcontainer.json`:
 
 ```json
 {
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:2": {},
-    "ghcr.io/openfactoryio/openfactory-sdk/infra:0.4.2": {}
+    "ghcr.io/openfactoryio/openfactory-sdk/infra:0.4.2": {},
+    "ghcr.io/openfactoryio/openfactory-sdk/opcua-connector:0.4.2": {}
   }
 }
 ```
 
-> 💡 **Note:** Version pinning ensures the SDK is the one for their specific OpenFactory version.
+> 💡 **Note:** Version pinning ensures that the SDK features match the OpenFactory version you are targeting.
 
-#### 2️⃣ OpenFactory Core Developers
+### 2️⃣ OpenFactory Core Developers
 
-These developers contribute to OpenFactory itself.
-They usually want to use the **latest development version** of the SDK feature, and the latest OpenFactory version, which is `main`.
+These developers contribute to OpenFactory itself. They usually want to use the **latest development version** of the SDK features and the latest OpenFactory version.
 
 Example:
 
@@ -55,66 +60,82 @@ Example:
     "ghcr.io/devcontainers/features/docker-in-docker:2": {},
     "ghcr.io/openfactoryio/openfactory-sdk/infra:0.0.0-dev.05580d9": {
       "openfactory-version": "main"
+    },
+    "ghcr.io/openfactoryio/openfactory-sdk/opcua-connector:0.0.0-dev.05580d9": {
+      "opcua-connector-version": "latest"
     }
   }
 }
 ```
 
-> 📝 **Note:** The latest development version of the SDK feature can be found [here](https://github.com/openfactoryio/openfactory-sdk/pkgs/container/openfactory-sdk%2Finfra).
+> 📝 **Note:** The latest development version of the SDK features can be found [here](https://github.com/openfactoryio/openfactory-sdk/pkgs/container/openfactory-sdk).
 
+---
 
-### ⚙️ Optional Settings
+## ⚙️ Optional Settings
 
-For advanced use cases, the feature also exposes the following optional settings:
+Each feature provides optional configuration:
 
-| Option ID             | Description                                                     | Type    | Default Value               |
-| --------------------- | --------------------------------------------------------------- | ------- | --------------------------- |
-| `openfactory-version` | Git ref (branch, tag, or commit) of OpenFactory Core to install | string  | *(matches feature version)* |
-| `useLocalSdk`         | Use the local SDK source code instead of installing from GitHub | boolean | `false`                     |
+| Feature           | Option ID                 | Description                                                     | Type    | Default Value               |
+| ----------------- | ------------------------- | --------------------------------------------------------------- | ------- | --------------------------- |
+| `infra`           | `openfactory-version`     | Git ref (branch, tag, or commit) of OpenFactory Core to install | string  | *(matches feature version)* |
+|                   | `useLocalSdk`             | Use the local SDK source code instead of installing from GitHub | boolean | `false`                     |
+| `opcua-connector` | `opcua-connector-version` | Git ref of the OPC UA Connector image to install                | string  | *(matches feature version)* |
+|                   | `useLocalSdk`             | Use the local SDK source code instead of installing from GitHub | boolean | `false`                     |
 
-> 📝 **Note:** The default `openfactory-version` is automatically set to the OpenFactory Core version that this SDK feature was developed and tested against. Most users do not need to override it.
+---
 
-### ✅ What This Feature Does
+## ✅ What the SDK Features Do
 
-* Install OpenFactory with the desired version (matching the feature version)
+**Infrastructure (`infra`) Feature:**
 
-* Install the OpenFactory SDK
+* Install OpenFactory Core and SDK (matching the feature version)
+* Deploy Kafka cluster and ksqlDB using Docker Compose
+* Set environment variables:
 
-* Copy the OpenFactory infrastructure files into your dev container (under `/usr/local/share/openfactory-sdk/openfactory-infra`)
-* Define these environment variables:
-  ```
+  ```bash
   CONTAINER_IP=<DEV_CONTAINER-IP>
   KAFKA_BROKER=$CONTAINER_IP:9092,broker:29092
   KSQLDB_URL=http://$CONTAINER_IP:8088
   ```
+* Add aliases:
 
-* Add these shell aliases:
-  ```
-  ksql      – launch the ksqlDB CLI
-  spinup    – start infrastructure with Docker Compose
-  teardown  – tear down the infrastructure
-  ```
-
-  The environment variables and aliases are available in every Bash terminal inside your dev container.
-
-* Configure the environment to deploy to the OpenFactory infrastructure inside the development container
-
-  To deploy OpenFactory assets such as devices or applications on the development infrastructure, use the `ofa` command-line tool provided by OpenFactory.
-
-  You can get help and explore available commands by running:
   ```bash
-  ofa --help
+  ksql      – launch the ksqlDB CLI
+  spinup    – start infrastructure
+  teardown  – stop infrastructure
   ```
 
-## 📦 Use cases
+**OPC UA Connector (`opcua-connector`) Feature:**
+
+* Copy OPC UA Connector Docker files into the container
+* Define environment variable:
+
+  ```bash
+  OPCUA_CONNECTOR_VERSION="<version>"
+  ```
+* Add aliases:
+
+  ```bash
+  opcua-connector-up    – launch OPC UA Connector
+  opcua-connector-down  – stop OPC UA Connector
+  ```
+
+All environment variables and aliases are available in every Bash terminal inside the Dev Container.
+
+---
+
+## 📦 Use Cases
 
 * [Test an OpenFactory adapter](doc/test_adapter.md)
+* Develop OpenFactory applications without a full production infrastructure
+* Experiment with the OPC UA Connector in isolation or alongside the simulated infrastructure
+
+---
 
 ## 🧪 For Feature Developers
 
-If you're contributing to the SDK itself or developing the Dev Container feature, you may want to install the SDK from the local source in editable mode.
-
-Set this in `.devcontainer/devcontainer.json`:
+If you're contributing to the SDK itself or developing Dev Container features, you may want to install the SDK from the local source in **editable mode**.
 
 ```json
 {
