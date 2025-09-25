@@ -6,6 +6,10 @@
     "./features/infra": {
       "useLocalSdk": true,
       "openfactory-version": "main"
+    },
+    "./features/opcua-connector": {
+      "useLocalSdk": true,
+      "opcua-connector-version": "latest"
     }
   },
   "containerEnv": {
