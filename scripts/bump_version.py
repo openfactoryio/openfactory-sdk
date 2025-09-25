@@ -2,9 +2,12 @@
 Bump the version number in pyproject.toml and devcontainer-feature.json.
 
 This script updates:
-- The `version` field in the [project] section of `pyproject.toml`
-- The `version` and `openfactory-version.default` fields in
-  `.devcontainer/features/infra/devcontainer-feature.json`
+
+1. The `version` field in the `[project]` section of `pyproject.toml`
+2. The `version` and `openfactory-version.default` fields in
+   `.devcontainer/features/infra/devcontainer-feature.json`
+3. The `version` and `opcua-connector-version.default` fields in
+   `.devcontainer/features/opcua-connector/devcontainer-feature.json`
 
 Usage:
     python scripts/bump_version.py <new_version>
@@ -85,9 +88,9 @@ def bump_pyproject_version(version: str) -> None:
     return new_version
 
 
-def bump_devcontainer_version(version: str) -> None:
+def bump_infra_feature_version(version: str) -> None:
     """
-    Update the version and openfactory-version.default in devcontainer-feature.json.
+    Update the version for the infra feature.
 
     If the version is "dev", it transforms the current version to "<base>-dev.1"
     and sets openfactory-version.default to "main". Otherwise, it sets the version
@@ -137,6 +140,58 @@ def bump_devcontainer_version(version: str) -> None:
     print(f"[devcontainer-feature.json] openfactory-version.default updated: {old_default} → {data['options']['openfactory-version']['default']}")
 
 
+def bump_opcua_feature_version(version: str) -> None:
+    """
+    Update the version for the OPC UA Connector feature.
+
+    If version is "dev", it transforms the current version to "<base>-dev.1"
+    and sets opcua-connector-version.default to "main".
+    Otherwise, sets version and default tag based on the semantic version provided.
+
+    Args:
+        version (str): The new version string, e.g., "0.4.2" or "dev".
+
+    Raises:
+        SystemExit: If the JSON file is missing or required fields are not found.
+    """
+    json_path = (
+        Path(__file__).resolve().parent.parent /
+        ".devcontainer/features/opcua-connector/devcontainer-feature.json"
+    )
+
+    if not json_path.exists():
+        print("ERROR: devcontainer-feature.json (opcua-connector) not found.")
+        sys.exit(1)
+
+    with json_path.open("r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    if "version" not in data or "options" not in data \
+       or "opcua-connector-version" not in data["options"] \
+       or "default" not in data["options"]["opcua-connector-version"]:
+        print("ERROR: Required fields missing in opcua-connector devcontainer-feature.json.")
+        sys.exit(1)
+
+    old_version = data["version"]
+    old_default = data["options"]["opcua-connector-version"]["default"]
+
+    if version == "dev":
+        base_version = old_version.split("-")[0]
+        new_version = f"{base_version}-dev.1"
+        data["version"] = new_version
+        data["options"]["opcua-connector-version"]["default"] = "main"
+    else:
+        data["version"] = version
+        data["options"]["opcua-connector-version"]["default"] = f"v{version}"
+
+    with json_path.open("w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2)
+        f.write("\n")
+
+    print(f"[opcua-connector] version updated: {old_version} → {data['version']}")
+    print(f"[opcua-connector] opcua-connector-version.default updated: {old_default} → {data['options']['opcua-connector-version']['default']}")
+
+
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Usage: bump_version.py <new_version>")
@@ -144,7 +199,8 @@ if __name__ == "__main__":
 
     new_version = sys.argv[1]
     final_version = bump_pyproject_version(new_version)
-    bump_devcontainer_version(new_version)
+    bump_infra_feature_version(new_version)
+    bump_opcua_feature_version(new_version)
 
     # print final version for workflow to capture
     print(final_version)
