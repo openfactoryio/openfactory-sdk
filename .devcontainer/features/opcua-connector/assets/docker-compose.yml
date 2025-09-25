@@ -1,0 +1,47 @@
+# -----------------------------------------------------------------------------
+# 🐳 Docker Compose file for OPC UA Connector (OpenFactory)
+#
+# This file defines the services required to run the OPC UA Connector stack:
+# 1. opcua-coordinator   - Orchestrates device assignments across gateways
+# 2. opcua-gateway       - Connects to OPC UA servers, monitors devices, and
+#                          streams data to OpenFactory via Kafka
+#
+# Usage:
+#   # Start services
+#   docker compose up -d
+#
+#   # Stop services
+#   docker compose down
+#
+# Environment variables:
+#   COORDINATOR_URL          URL of the coordinator (default: http://opcua-coordinator:8000)
+#   KAFKA_BROKER             Kafka bootstrap server (required)
+#   KSQLDB_URL               ksqlDB URL (required)
+#   OPCUA_GATEWAY_LOG_LEVEL  Log level (optional, default: INFO)
+#
+# Ports:
+#   Coordinator API: 8000
+#   Gateway API:     8001
+# -----------------------------------------------------------------------------
+
+services:
+  opcua-gateway:
+    image: ghcr.io/openfactoryio/opcua-gateway:${OPCUA_CONNECTOR_VERSION}
+    container_name: opcua-gateway
+    environment:
+      - GATEWAY_HOST=opcua-gateway
+      - COORDINATOR_URL=http://${CONTAINER_IP}:8000
+      - KAFKA_BROKER=${KAFKA_BROKER}
+      - KSQLDB_URL=${KSQLDB_URL}
+      - OPCUA_GATEWAY_LOG_LEVEL=${OPCUA_GATEWAY_LOG_LEVEL:-INFO}
+    ports:
+      - "${GATEWAY_PORT:-8001}:8001"
+
+  opcua-coordinator:
+    image: ghcr.io/openfactoryio/opcua-coordinator:${OPCUA_CONNECTOR_VERSION}
+    container_name: opcua-coordinator
+    environment:
+      - KAFKA_BROKER=${KAFKA_BROKER}
+      - KSQLDB_URL=${KSQLDB_URL}
+    ports:
+      - "${COORDINATOR_PORT:-8000}:8000"

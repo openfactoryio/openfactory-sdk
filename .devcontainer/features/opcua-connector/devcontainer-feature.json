@@ -1,0 +1,21 @@
+{
+  "id": "opcua-connector",
+  "version": "0.4.2",
+  "name": "OpenFactory OPC UA Connector",
+  "description": "Installs the OpenFactory OPC UA Connector",
+  "options": {
+    "opcua-connector-version": {
+      "type": "string",
+      "default": "v0.4.2",
+      "description": "Git ref of the OPC UA Connector image to install"
+    },
+    "useLocalSdk": {
+      "type": "boolean",
+      "default": false,
+      "description": "Use local SDK (mounted in workspace) instead of GitHub"
+    }
+  },
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/common-utils"
+  ]
+}
