@@ -1,6 +1,6 @@
 [project]
 name = "openfactory-sdk"
-version = "0.4.2"
+version = "0.4.3"
 description = "A developer SDK for simulating and deploying apps on a local OpenFactory setup."
 requires-python = ">=3.12"
 dependencies = [
