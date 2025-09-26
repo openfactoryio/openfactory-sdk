@@ -9,8 +9,14 @@ cp -r "$(dirname "$0")/assets/." "/usr/local/share/openfactory-opcua"
 
 # Set environment variables
 echo "🛠️ Setting environment variables..."
-cat << EOF > /etc/profile.d/00-openfactory-opcua.sh
-export OPCUA_CONNECTOR_VERSION="${OPCUA_CONNECTOR_VERSION}"
+
+# Capture version from feature options (install-time)
+echo "export OPCUA_CONNECTOR_VERSION=\"${OPCUA_CONNECTOR_VERSION}\"" > /etc/profile.d/00-openfactory-opcua.sh
+
+# Append runtime-dependent variables
+cat << 'EOF' >> /etc/profile.d/00-openfactory-opcua.sh
+CONTAINER_IP=$(hostname -I | awk '{print $1}')
+export OPCUA_CONNECTOR_COORDINATOR="http://${CONTAINER_IP}:${COORDINATOR_PORT:-8000}"
 EOF
 
 chmod +x /etc/profile.d/00-openfactory-opcua.sh
