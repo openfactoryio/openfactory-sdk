@@ -7,15 +7,6 @@ echo "📁 Copying OPC UA Connector files..."
 mkdir -p "/usr/local/share/openfactory-opcua"
 cp -r "$(dirname "$0")/assets/." "/usr/local/share/openfactory-opcua"
 
-# Install feature
-if [ "${USELOCALSDK}" = "true" ]; then
-  echo "🐍 Using local feature: skipping pip install in feature. Will install via postCreateCommand."
-else
-  echo "🐍 Installing OpenFactory OPC UA Connector feature from GitHub..."
-  pip install --no-cache-dir --upgrade --force-reinstall \
-    "git+https://github.com/openfactoryio/openfactory-sdk.git@${OPENFACTORY_VERSION}"
-fi
-
 # Set environment variables
 echo "🛠️ Setting environment variables..."
 cat << EOF > /etc/profile.d/00-openfactory-opcua.sh
