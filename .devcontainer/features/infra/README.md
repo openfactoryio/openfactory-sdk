@@ -64,7 +64,7 @@ For advanced use cases, the feature also exposes the following optional settings
 
 | Option ID             | Description                                                     | Type    | Default Value               |
 | --------------------- | --------------------------------------------------------------- | ------- | --------------------------- |
-| `openfactory-version` | Git ref (branch, tag, or commit) of OpenFactory Core to install | string  | *(matches feature version)* |
+| `openfactory-version` | Git ref (e.g. v1.2.3 or main) of OpenFactory Core to install    | string  | *(matches feature version)* |
 | `useLocalSdk`         | Use the local SDK source code instead of installing from GitHub | boolean | `false`                     |
 
 > 📝 **Note:** The default `openfactory-version` is automatically set to the OpenFactory Core version that this SDK feature was developed and tested against. Most users do not need to override it.
