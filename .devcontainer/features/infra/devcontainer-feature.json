@@ -7,7 +7,7 @@
     "openfactory-version": {
       "type": "string",
       "default": "v0.4.3",
-      "description": "Git ref (branch, tag, or commit) of OpenFactory to install"
+      "description": "Git ref (e.g. v1.2.3 or main) of OpenFactory to install"
     },
     "useLocalSdk": {
       "type": "boolean",
