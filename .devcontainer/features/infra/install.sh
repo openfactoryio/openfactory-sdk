@@ -46,6 +46,7 @@ export CONTAINER_IP
 export KAFKA_BROKER="${KAFKA_BROKER:-${CONTAINER_IP}:9092,broker:29092}"
 export KSQLDB_URL="${KSQLDB_URL:-http://${CONTAINER_IP}:8088}"
 export DEPLOYMENT_PLATFORM="docker"
+export ASSET_ROUTER_URL="http://${CONTAINER_IP}:8002"
 EOF
 
 chmod +x /etc/profile.d/00-openfactory-sdk.sh
