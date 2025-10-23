@@ -14,11 +14,11 @@ set -e
 echo "🛑  Stopping OpenFactory stack..."
 
 # Common path for infra files
-INFRA_PATH="/usr/local/share/openfactory-sdk/openfactory-infra"
+SDK_PATH="/usr/local/share/openfactory-sdk"
 
 # Compose files
-KAFKA_COMPOSE_FILE="${INFRA_PATH}/docker-compose.yml"
-FAN_OUT_LAYER_COMPOSE_FILE="${INFRA_PATH}/docker-compose.fan-out-layer.yml"
+KAFKA_COMPOSE_FILE="${SDK_PATH}/openfactory-infra/docker-compose.yml"
+FAN_OUT_LAYER_COMPOSE_FILE="${SDK_PATH}/openfactory-fanoutlayer/docker-compose.yml"
 
 # Tear down fan-out layer first
 echo "🐳  Stopping OpenFactory fan-out layer..."

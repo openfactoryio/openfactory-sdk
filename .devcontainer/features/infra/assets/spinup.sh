@@ -18,9 +18,9 @@ set -e
 echo "🚀  Starting OpenFactory stack..."
 
 # Location of docker-compose file
-INFRA_PATH="/usr/local/share/openfactory-sdk/openfactory-infra"
-KAFKA_COMPOSE_FILE="${INFRA_PATH}/docker-compose.yml"
-FAN_OUT_LAYER_COMPOSE_FILE="${INFRA_PATH}/docker-compose.fan-out-layer.yml"
+SDK_PATH="/usr/local/share/openfactory-sdk"
+KAFKA_COMPOSE_FILE="${SDK_PATH}/openfactory-infra/docker-compose.yml"
+FAN_OUT_LAYER_COMPOSE_FILE="${SDK_PATH}/openfactory-fanoutlayer/docker-compose.yml"
 
 # Spin up containers
 echo "🐳  Deploying Kafka CLuster ..."
@@ -32,6 +32,6 @@ ofa setup-kafka --ksqldb-server "${KSQLDB_URL}"
 
 # Setup OpenFactory Fan-out Layer
 echo "🐳  Deploying OpenFactory fan-out layer ..."
-docker compose -f "$FAN_OUT_LAYER_COMPOSE_FILE" -p fan-out-layer up -d
+docker compose -f "$FAN_OUT_LAYER_COMPOSE_FILE" -p fan-out-layer up -d --scale asset-forwarder=1 --scale asset-router=1
 
 echo "✅  OpenFactory stack is ready!"
