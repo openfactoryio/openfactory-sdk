@@ -34,6 +34,10 @@ else
   EFFECTIVE_VERSION="${OPENFACTORY_VERSION}"
 fi
 
+# Install fan-out-layer
+echo "📁 Copying fan-out-layer files"
+ofa templates copy fanoutlayer /usr/local/share/openfactory-sdk/openfactory-fanoutlayer/
+
 # Write install-time variables
 echo "export ASSET_FORWARDER_VERSION=\"${EFFECTIVE_VERSION}\"" > /etc/profile.d/00-openfactory-sdk.sh
 echo "export ASSET_ROUTER_VERSION=\"${EFFECTIVE_VERSION}\"" >> /etc/profile.d/00-openfactory-sdk.sh
@@ -47,6 +51,7 @@ export KAFKA_BROKER="${KAFKA_BROKER:-${CONTAINER_IP}:9092,broker:29092}"
 export KSQLDB_URL="${KSQLDB_URL:-http://${CONTAINER_IP}:8088}"
 export DEPLOYMENT_PLATFORM="docker"
 export ASSET_ROUTER_URL="http://${CONTAINER_IP}:8002"
+export NATS_CLUSTER_C1="nats://${CONTAINER_IP}:4222"
 EOF
 
 chmod +x /etc/profile.d/00-openfactory-sdk.sh
