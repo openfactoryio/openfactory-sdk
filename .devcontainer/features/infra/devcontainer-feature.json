@@ -1,12 +1,12 @@
 {
   "id": "infra",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "name": "OpenFactory SDK Feature",
   "description": "Installs the OpenFactory SDK and its local infrastructure.",
   "options": {
     "openfactory-version": {
       "type": "string",
-      "default": "v0.4.3",
+      "default": "v0.4.4",
       "description": "Git ref (e.g. v1.2.3 or main) of OpenFactory to install"
     },
     "useLocalSdk": {
