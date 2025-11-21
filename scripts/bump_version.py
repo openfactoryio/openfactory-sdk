@@ -167,29 +167,35 @@ def bump_opcua_feature_version(version: str) -> None:
         data = json.load(f)
 
     if "version" not in data or "options" not in data \
-       or "opcua-connector-version" not in data["options"] \
-       or "default" not in data["options"]["opcua-connector-version"]:
-        print("ERROR: Required fields missing in opcua-connector devcontainer-feature.json.")
+       or "opcua-gateway-version" not in data["options"] \
+       or "opcua-coordinator-version" not in data["options"] \
+       or "default" not in data["options"]["opcua-gateway-version"] \
+       or "default" not in data["options"]["opcua-coordinator-version"]:
+        print("ERROR: Required fields missing in devcontainer-feature.json.")
         sys.exit(1)
 
     old_version = data["version"]
-    old_default = data["options"]["opcua-connector-version"]["default"]
+    old_default_gateway = data["options"]["opcua-gateway-version"]["default"]
+    old_default_coordinator = data["options"]["opcua-coordinator-version"]["default"]
 
     if version == "dev":
         base_version = old_version.split("-")[0]
         new_version = f"{base_version}-dev.1"
         data["version"] = new_version
-        data["options"]["opcua-connector-version"]["default"] = "main"
+        data["options"]["opcua-gateway-version"]["default"] = "main"
+        data["options"]["opcua-coordinator-version"]["default"] = "main"
     else:
         data["version"] = version
-        data["options"]["opcua-connector-version"]["default"] = f"v{version}"
+        data["options"]["opcua-gateway-version"]["default"] = f"v{version}"
+        data["options"]["opcua-coordinator-version"]["default"] = f"v{version}"
 
     with json_path.open("w", encoding="utf-8") as f:
         json.dump(data, f, indent=2)
         f.write("\n")
 
     print(f"[opcua-connector] version updated: {old_version} → {data['version']}")
-    print(f"[opcua-connector] opcua-connector-version.default updated: {old_default} → {data['options']['opcua-connector-version']['default']}")
+    print(f"[opcua-gateway] opcua-gateway-version.default updated: {old_default_gateway} → {data['options']['opcua-gateway-version']['default']}")
+    print(f"[opcua-coordinator] opcua-coordinator-version.default updated: {old_default_coordinator} → {data['options']['opcua-coordinator-version']['default']}")
 
 
 if __name__ == "__main__":

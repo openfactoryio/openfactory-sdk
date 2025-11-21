@@ -9,7 +9,8 @@
     },
     "./features/opcua-connector": {
       "useLocalSdk": true,
-      "opcua-connector-version": "latest"
+      "opcua-coordinator-version": "latest",
+      "opcua-gateway-version": "latest"
     }
   },
   "containerEnv": {

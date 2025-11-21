@@ -26,7 +26,7 @@
 
 services:
   opcua-gateway:
-    image: ghcr.io/openfactoryio/opcua-gateway:${OPCUA_CONNECTOR_VERSION}
+    image: ghcr.io/openfactoryio/opcua-gateway:${OPCUA_GATEWAY_VERSION}
     container_name: opcua-gateway
     environment:
       - GATEWAY_HOST=opcua-gateway
@@ -38,7 +38,7 @@ services:
       - "${GATEWAY_PORT:-8001}:8001"
 
   opcua-coordinator:
-    image: ghcr.io/openfactoryio/opcua-coordinator:${OPCUA_CONNECTOR_VERSION}
+    image: ghcr.io/openfactoryio/opcua-coordinator:${OPCUA_COORDINATOR_VERSION}
     container_name: opcua-coordinator
     environment:
       - KAFKA_BROKER=${KAFKA_BROKER}
