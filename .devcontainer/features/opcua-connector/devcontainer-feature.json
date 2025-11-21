@@ -4,10 +4,15 @@
   "name": "OpenFactory OPC UA Connector",
   "description": "Installs the OpenFactory OPC UA Connector",
   "options": {
-    "opcua-connector-version": {
+    "opcua-gateway-version": {
       "type": "string",
       "default": "v0.4.4",
-      "description": "Git ref of the OPC UA Connector image to install"
+      "description": "Git ref of the OPC UA Gateway image to install"
+    },
+    "opcua-coordinator-version": {
+      "type": "string",
+      "default": "v0.4.4",
+      "description": "Git ref of the OPC UA Coordinator image to install"
     },
     "useLocalSdk": {
       "type": "boolean",

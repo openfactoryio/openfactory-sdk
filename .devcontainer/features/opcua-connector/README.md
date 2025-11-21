@@ -63,12 +63,13 @@ Example configuration:
 
 ## ⚙️ Optional Settings
 
-| Option ID                 | Description                                                 | Type    | Default Value               |
-| ------------------------- | ----------------------------------------------------------- | ------- | --------------------------- |
-| `opcua-connector-version` | Git ref of the OPC UA Connector image to install            | string  | *(matches feature version)* |
-| `useLocalSdk`             | Use local SDK source code instead of installing from GitHub | boolean | `false`                     |
+| Option ID                   | Description                                                 | Type    | Default Value               |
+| --------------------------- | ----------------------------------------------------------- | ------- | --------------------------- |
+| `opcua-coordinator-version` | Git ref of the OPC UA Coordinator image to install          | string  | *(matches feature version)* |
+| `opcua-gateway-version`     | Git ref of the OPC UA Gateway image to install              | string  | *(matches feature version)* |
+| `useLocalSdk`               | Use local SDK source code instead of installing from GitHub | boolean | `false`                     |
 
-> 📝 **Note:** The default `opcua-connector-version` matches the OpenFactory Core version this feature was developed and tested against. Most users do not need to override it.
+> 📝 **Note:** The default `opcua-coordinator-version` and `opcua-gateway-version` matche the OpenFactory Core version this feature was developed and tested against. Most users do not need to override it.
 
 ---
 

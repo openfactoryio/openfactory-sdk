@@ -11,7 +11,8 @@ cp -r "$(dirname "$0")/assets/." "/usr/local/share/openfactory-opcua"
 echo "🛠️ Setting environment variables..."
 
 # Capture version from feature options (install-time)
-echo "export OPCUA_CONNECTOR_VERSION=\"${OPCUA_CONNECTOR_VERSION}\"" > /etc/profile.d/00-openfactory-opcua.sh
+echo "export OPCUA_GATEWAY_VERSION=\"${OPCUA_GATEWAY_VERSION}\"" > /etc/profile.d/00-openfactory-opcua.sh
+echo "export OPCUA_COORDINATOR_VERSION=\"${OPCUA_COORDINATOR_VERSION}\"" >> /etc/profile.d/00-openfactory-opcua.sh
 
 # Append runtime-dependent variables
 cat << 'EOF' >> /etc/profile.d/00-openfactory-opcua.sh
