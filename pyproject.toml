@@ -16,9 +16,6 @@ dev = [
     "MTCAdapters @ git+https://github.com/Demo-Smart-Factory-Concordia-University/MTCAdapters.git",
 ]
 
-[project.scripts]
-openfactory-sdk = "openfactory_sdk.cli:ofa_sdk_cli"
-
 [build-system]
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
