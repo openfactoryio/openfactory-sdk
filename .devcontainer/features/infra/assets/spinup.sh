@@ -5,8 +5,9 @@ set -e
 #
 # This script will:
 #   1. Start the Kafka cluster defined in docker-compose.yml
-#   2. Initialize the OpenFactory stream processing topology via ofa setup-kafka
-#   3. Start the fan-out layer defined in docker-compose.fan-out-layer.yml
+#   2. Setup required Kafka topics
+#   3. Initialize the OpenFactory stream processing topology via ofa setup-kafka
+#   4. Start the fan-out layer defined in docker-compose.fan-out-layer.yml
 #
 # Environment variables:
 #   KSQLDB_URL - URL of the ksqlDB server (defaults set in install.sh profile script)
@@ -25,6 +26,10 @@ FAN_OUT_LAYER_COMPOSE_FILE="${SDK_PATH}/openfactory-fanoutlayer/docker-compose.y
 # Spin up containers
 echo "🐳  Deploying Kafka CLuster ..."
 docker compose -f "$KAFKA_COMPOSE_FILE" -p kafka-cluster up -d
+
+# Setup required Kafka topics
+echo "⚙️  Setting up Kafka topics ..."
+/usr/local/bin/create_topics.sh
 
 # Run OpenFactory setup
 echo "⚙️  Deploying OpenFactory stream processing topology ..."
