@@ -1,6 +1,14 @@
 {
   "name": "OpenFactory-SDK Dev Container",
-  "image": "mcr.microsoft.com/devcontainers/python:2.0.2-3.13-bullseye",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".",
+    "args": {
+      "USERNAME": "vscode",
+      "USER_UID": "1000",
+      "USER_GID": "1000"
+    }
+  },
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:2.12.4": {},
     "./features/infra": {
