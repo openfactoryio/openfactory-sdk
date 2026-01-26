@@ -1,0 +1,70 @@
+# -----------------------------------------------------------------------------
+# Kafka topics for OpenFactory ksqlDB topology
+# -----------------------------------------------------------------------------
+topics:
+
+  # ---------------------------------------------------------------------
+  # 001-assets.sql
+
+  - name: ofa_assets
+    partitions: 1
+    replication: 1
+    cleanup: delete
+    comment: Source topic for assets_stream
+
+  - name: enriched_assets_stream_topic
+    partitions: 1
+    replication: 1
+    cleanup: delete
+    comment: Derived topic for enriched_assets_stream, assets table
+
+  - name: docker_services_topic
+    partitions: 1
+    replication: 1
+    cleanup: delete
+    comment: Derived topic for docker_services_stream, docker_services table
+
+  - name: assets_types_topic
+    partitions: 1
+    replication: 1
+    cleanup: compact
+    comment: Assets types topic including tombstones
+
+  - name: assets_avail_topic
+    partitions: 1
+    replication: 1
+    cleanup: compact
+    comment: Assets availability topic including tombstones
+
+  # ---------------------------------------------------------------------
+  # 002-assets-uns.sql
+
+  - name: asset_to_uns_map_topic
+    partitions: 1
+    replication: 1
+    cleanup: compact
+    comment: Source table for mapping asset_uuid → uns_id
+
+  - name: ofa_assets_uns
+    partitions: 1
+    replication: 1
+    cleanup: delete
+    comment: OpenFactory Assets stream keyed by uns_id
+
+  # ---------------------------------------------------------------------
+  # 003-ofa-cmds.sql
+
+  - name: ofa_cmds
+    partitions: 1
+    replication: 1
+    cleanup: delete
+    comment: OpenFactory cmds_stream
+
+  # ---------------------------------------------------------------------
+  # 004-device_connectors.sql
+
+  - name: device_connector_topic
+    partitions: 1
+    replication: 1
+    cleanup: compact
+    comment: Source table for DEVICE_CONNECTOR_SOURCE / DEVICE_CONNECTOR
