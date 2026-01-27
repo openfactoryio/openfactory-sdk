@@ -31,9 +31,13 @@ Once installed, the features allow you to start and stop infrastructure and OPC 
 
 ## 🚀 Usage
 
+For all use cases, it is recommended to use as base image `ghcr.io/openfactoryio/devcontainer`.
+
 ### 1️⃣ OpenFactory Application Developers
 
-These developers are building OpenFactory applications for a **specific OpenFactory version**. They should **pin the SDK feature version** to match the version running in their factory.
+These developers are building OpenFactory applications for a **specific OpenFactory version**. 
+They should **pin the SDK feature version** to match the version running in their factory.
+It is further recommended to pin the version of the base image (e.g. `ghcr.io/openfactoryio/devcontainer:0.4.8`) in the same way.
 
 Example `.devcontainer/devcontainer.json`:
 
@@ -41,8 +45,8 @@ Example `.devcontainer/devcontainer.json`:
 {
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:2": {},
-    "ghcr.io/openfactoryio/openfactory-sdk/infra:0.4.2": {},
-    "ghcr.io/openfactoryio/openfactory-sdk/opcua-connector:0.4.2": {}
+    "ghcr.io/openfactoryio/openfactory-sdk/infra:0.4.8": {},
+    "ghcr.io/openfactoryio/openfactory-sdk/opcua-connector:0.4.8": {}
   }
 }
 ```
