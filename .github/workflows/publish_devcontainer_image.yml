@@ -6,13 +6,19 @@ on:
       - created
   workflow_dispatch:
 
-env:
-  DOCKER_IMAGE: ghcr.io/openfactoryio/devcontainer
-
 jobs:
   push_to_registry:
     name: Build and Push Docker Image to GHCR
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        image:
+          - name: ghcr.io/openfactoryio/devcontainer-py3.12
+            base: python:3.12-slim-bullseye
+          - name: ghcr.io/openfactoryio/devcontainer-py3.13
+            base: python:3.13-slim-bookworm
+          - name: ghcr.io/openfactoryio/devcontainer-py3.14
+            base: python:3.14-slim-bookworm
 
     steps:
 
@@ -26,13 +32,13 @@ jobs:
       - name: Set tags dynamically
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "TAGS=${{ env.DOCKER_IMAGE }}:manual-${{ github.sha }}" >> $GITHUB_ENV
-            echo "TAGS_LATEST=${{ env.DOCKER_IMAGE }}:latest" >> $GITHUB_ENV
+            echo "TAGS=${{ matrix.image.name }}:manual-${{ github.sha }}" >> $GITHUB_ENV
+            echo "TAGS_LATEST=${{ matrix.image.name }}:latest" >> $GITHUB_ENV
             echo "VERSION=dev" >> $GITHUB_ENV
             echo "OPENFACTORY_VERSION=main" >> $GITHUB_ENV
           else
-            echo "TAGS=${{ env.DOCKER_IMAGE }}:${{ github.ref_name }}" >> $GITHUB_ENV
-            echo "TAGS_LATEST=${{ env.DOCKER_IMAGE }}:latest" >> $GITHUB_ENV
+            echo "TAGS=${{ matrix.image.name }}:${{ github.ref_name }}" >> $GITHUB_ENV
+            echo "TAGS_LATEST=${{ matrix.image.name }}:latest" >> $GITHUB_ENV
             echo "VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
             echo "OPENFACTORY_VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
           fi
@@ -50,6 +56,8 @@ jobs:
           context: ./.devcontainer
           file: ./.devcontainer/Dockerfile
           push: true
+          build-args: |
+            PYTHON_BASE_IMAGE=${{ matrix.image.base }}
           tags: |
             ${{ env.TAGS }}
             ${{ env.TAGS_LATEST }}
