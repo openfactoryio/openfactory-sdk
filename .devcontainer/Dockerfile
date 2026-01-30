@@ -7,7 +7,8 @@
 # essential tools and Python packages for development.
 #
 # Key Features:
-#   - Based on python:3.13-slim-bookworm for small footprint
+#   - Python version configurable via build arg `PYTHON_BASE_IMAGE`
+#     (default: python:3.13-slim-bookworm)
 #   - Non-root 'vscode' user with sudo privileges
 #   - Dynamic Git branch prompt with colors in Bash
 #   - Installs essential tools: git, curl, yq
@@ -15,10 +16,14 @@
 #   - Ready for use with VS Code devcontainers
 # 
 # For local builds:
-#     docker build -t openfactoryio/devcontainer:latest -f Dockerfile .
+#     docker build --build-arg PYTHON_BASE_IMAGE=python:3.14-slim-bookworm \
+#                  -t openfactoryio/devcontainer:latest \
+#                  -f Dockerfile .
 # ------------------------------------------------------------------------------
 
-FROM python:3.13-slim-bookworm
+# Python version (with slim variant)
+ARG PYTHON_BASE_IMAGE=python:3.13-slim-bookworm
+FROM ${PYTHON_BASE_IMAGE}
 
 # Avoid interactive prompts
 ENV DEBIAN_FRONTEND=noninteractive
