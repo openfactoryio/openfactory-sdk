@@ -31,7 +31,8 @@ Once installed, the features allow you to start and stop infrastructure and OPC 
 
 ## 🚀 Usage
 
-For all use cases, it is recommended to use as base image `ghcr.io/openfactoryio/devcontainer`.
+For all use cases, it is recommended to use as base image `ghcr.io/openfactoryio/devcontainer-py3.XX`,
+where `XX` is the Python version you wish to use (currently 12, 13 or 14).
 
 ### 1️⃣ OpenFactory Application Developers
 
