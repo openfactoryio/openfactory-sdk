@@ -11,7 +11,7 @@
 #     (default: python:3.13-slim-bookworm)
 #   - Non-root 'vscode' user with sudo privileges
 #   - Dynamic Git branch prompt with colors in Bash
-#   - Installs essential tools: git, curl, yq
+#   - Installs essential tools: git, curl, ping, yq
 #   - Installs nfs-common to allow mounting NFS exports
 #   - Upgrades pip, setuptools, and wheel for smooth Python package installs
 #   - Ready for use with VS Code devcontainers
@@ -36,7 +36,7 @@ ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 RUN groupadd --gid $USER_GID $USERNAME \
     && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
-    && apt-get update && apt-get install -y sudo git curl yq nfs-common \
+    && apt-get update && apt-get install -y sudo git curl iputils-ping yq nfs-common \
     && echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/$USERNAME \
     && chmod 0440 /etc/sudoers.d/$USERNAME \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
