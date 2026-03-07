@@ -45,5 +45,6 @@ services:
     environment:
       - KAFKA_BROKER=${KAFKA_BROKER}
       - KSQLDB_URL=${KSQLDB_URL}
+      - ASSET_ROUTER_URL=${ASSET_ROUTER_URL}
     ports:
       - "${COORDINATOR_PORT:-8000}:8000"
