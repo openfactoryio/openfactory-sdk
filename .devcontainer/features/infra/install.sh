@@ -1,7 +1,22 @@
 #!/bin/bash
 set -e
 
-echo "🔧 Installing OpenFactory SDK feature..."
+EXPECTED_VERSION=$(grep '"version"' devcontainer-feature.json | sed -E 's/.*"([^"]+)".*/\1/')
+echo "🔧 Installing OpenFactory SDK feature v${EXPECTED_VERSION} ..."
+
+# Check compatibility of versions
+if [ -f /usr/local/etc/openfactory_version ]; then
+    INSTALLED_VERSION=$(cat /usr/local/etc/openfactory_version)
+
+    if [ "$INSTALLED_VERSION" != "$EXPECTED_VERSION" ]; then
+        echo "❌ OpenFactory features version mismatch"
+        echo "Installed: $INSTALLED_VERSION"
+        echo "Current:   $EXPECTED_VERSION"
+        exit 1
+    fi
+fi
+
+echo "$EXPECTED_VERSION" > /usr/local/etc/openfactory_version
 
 echo "📁 Copying infrastructure files..."
 mkdir -p "/usr/local/share/openfactory-sdk/openfactory-infra"
@@ -39,7 +54,8 @@ echo "📁 Copying fan-out-layer files"
 ofa templates copy fanoutlayer /usr/local/share/openfactory-sdk/openfactory-fanoutlayer/
 
 # Write install-time variables
-echo "export ASSET_FORWARDER_VERSION=\"${EFFECTIVE_VERSION}\"" > /etc/profile.d/00-openfactory-sdk.sh
+echo "export OPENFACTORY_VERSION=\"${OPENFACTORY_VERSION}\"" > /etc/profile.d/00-openfactory-sdk.sh
+echo "export ASSET_FORWARDER_VERSION=\"${EFFECTIVE_VERSION}\"" >> /etc/profile.d/00-openfactory-sdk.sh
 echo "export ASSET_ROUTER_VERSION=\"${EFFECTIVE_VERSION}\"" >> /etc/profile.d/00-openfactory-sdk.sh
 
 # Append runtime-dependent variables
