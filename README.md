@@ -52,7 +52,7 @@ Example `.devcontainer/devcontainer.json`:
 }
 ```
 
-> 💡 **Note:** Version pinning ensures that the SDK features match the OpenFactory version you are targeting.
+> 💡 **Note:** The **feature version** must match the OpenFactory version running in your factory (e.g. 0.4.8). Pinning ensures the SDK features remain compatible with the OpenFactory deployment you are targeting.
 
 ### 2️⃣ OpenFactory Core Developers
 
@@ -103,6 +103,7 @@ Each feature provides optional configuration:
   CONTAINER_IP=<DEV_CONTAINER-IP>
   KAFKA_BROKER=$CONTAINER_IP:9092,broker:29092
   KSQLDB_URL=http://$CONTAINER_IP:8088
+  OPENFACTORY_VERION=<value of feature option id openfactory-version>
   ```
 * Add aliases:
 
