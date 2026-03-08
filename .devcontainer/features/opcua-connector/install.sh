@@ -1,7 +1,22 @@
 #!/bin/bash
 set -e
 
-echo "🔧 Installing OpenFactory OPC UA Connector feature ..."
+EXPECTED_VERSION=$(grep '"version"' devcontainer-feature.json | sed -E 's/.*"([^"]+)".*/\1/')
+echo "🔧 Installing OpenFactory OPC UA Connector feature feature v${EXPECTED_VERSION} ..."
+
+# Check compatibility of versions
+if [ -f /usr/local/etc/openfactory_version ]; then
+    INSTALLED_VERSION=$(cat /usr/local/etc/openfactory_version)
+
+    if [ "$INSTALLED_VERSION" != "$EXPECTED_VERSION" ]; then
+        echo "❌ OpenFactory features version mismatch"
+        echo "Installed: $INSTALLED_VERSION"
+        echo "Current:   $EXPECTED_VERSION"
+        exit 1
+    fi
+fi
+
+echo "$EXPECTED_VERSION" > /usr/local/etc/openfactory_version
 
 echo "📁 Copying OPC UA Connector files..."
 mkdir -p "/usr/local/share/openfactory-opcua"
