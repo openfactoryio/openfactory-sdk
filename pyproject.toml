@@ -4,8 +4,8 @@ version = "0.5.2"
 description = "A developer SDK for simulating and deploying apps on a local OpenFactory setup."
 requires-python = ">=3.12"
 dependencies = [
-    "click>=8.1.0",
-    "rich"
+    "click>=8.3,<9.0",
+    "rich>=14.1,<15.0"
 ]
 
 [project.optional-dependencies]
