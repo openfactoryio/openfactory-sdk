@@ -29,6 +29,16 @@ jobs:
         if: github.event_name == 'release' && github.event.action == 'created'
         run: ./scripts/validate_version.sh ${{ github.ref_name }}
 
+      - name: Normalize version (PEP 440 to SemVer)
+        run: |
+          RAW_VERSION="${{ github.ref_name }}"
+
+          # Convert PEP 440 0.5.3rc1 to SemVer 0.5.3-rc1
+          SEMVER_VERSION=$(echo "$RAW_VERSION" | sed -E 's/^([0-9]+\.[0-9]+\.[0-9]+)rc([0-9]+)$/\1-rc\2/')
+
+          echo "RAW_VERSION=$RAW_VERSION" >> $GITHUB_ENV
+          echo "SEMVER_VERSION=$SEMVER_VERSION" >> $GITHUB_ENV
+
       - name: Set tags dynamically
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
@@ -37,10 +47,14 @@ jobs:
             echo "VERSION=dev" >> $GITHUB_ENV
             echo "OPENFACTORY_VERSION=main" >> $GITHUB_ENV
           else
-            echo "TAGS=${{ matrix.image.name }}:${{ github.ref_name }}" >> $GITHUB_ENV
-            echo "TAGS_LATEST=${{ matrix.image.name }}:latest" >> $GITHUB_ENV
-            echo "VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
-            echo "OPENFACTORY_VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
+            if [[ "${{ env.RAW_VERSION }}" =~ rc ]]; then
+              echo "TAGS_LATEST=" >> $GITHUB_ENV
+            else
+              echo "TAGS_LATEST=${{ matrix.image.name }}:latest" >> $GITHUB_ENV
+            fi
+            echo "TAGS=${{ matrix.image.name }}:${{ env.SEMVER_VERSION }}" >> $GITHUB_ENV
+            echo "VERSION=${{ env.RAW_VERSION }}" >> $GITHUB_ENV
+            echo "OPENFACTORY_VERSION=${{ env.RAW_VERSION }}" >> $GITHUB_ENV
           fi
 
       - name: Log in to GitHub Container Registry
