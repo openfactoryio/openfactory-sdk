@@ -5,7 +5,7 @@ description = "A developer SDK for simulating and deploying apps on a local Open
 requires-python = ">=3.12"
 dependencies = [
     "click>=8.3,<9.0",
-    "rich>=14.1,<15.0"
+    "rich>=14.1,<16.0"
 ]
 
 [project.optional-dependencies]
