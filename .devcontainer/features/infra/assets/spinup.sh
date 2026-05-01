@@ -21,11 +21,16 @@ echo "🚀  Starting OpenFactory stack..."
 # Location of docker-compose file
 SDK_PATH="/usr/local/share/openfactory-sdk"
 KAFKA_COMPOSE_FILE="${SDK_PATH}/openfactory-infra/docker-compose.yml"
+TRAEFIK_COMPOSE_FILE="${SDK_PATH}/openfactory-infra/docker-compose.traefik.yml"
 FAN_OUT_LAYER_COMPOSE_FILE="${SDK_PATH}/openfactory-fanoutlayer/docker-compose.yml"
 
 # Spin up containers
 echo "🐳  Deploying Kafka CLuster ..."
 docker compose -f "$KAFKA_COMPOSE_FILE" -p kafka-cluster up -d
+
+# Setup Traefik
+echo "🐳  Deploying Treafik ..."
+docker compose -f "$TRAEFIK_COMPOSE_FILE" -p traefik up -d
 
 # Setup required Kafka topics
 echo "⚙️  Setting up Kafka topics ..."

@@ -27,6 +27,13 @@
     "DEPLOYMENT_PLATFORM": "docker",
     "OPENFACTORY_UNS_SCHEMA": "/workspaces/openfactory-sdk/.devcontainer/uns.yml"
   },
+  "forwardPorts": [80],
+  "portsAttributes": {
+    "80": {
+      "label": "Traefik",
+      "onAutoForward": "openBrowser"
+    }
+  },
   "postCreateCommand": "pip install -e /workspaces/openfactory-sdk[dev]",
   "customizations": {
     "vscode": {
