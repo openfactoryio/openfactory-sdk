@@ -18,11 +18,16 @@ SDK_PATH="/usr/local/share/openfactory-sdk"
 
 # Compose files
 KAFKA_COMPOSE_FILE="${SDK_PATH}/openfactory-infra/docker-compose.yml"
+TRAEFIK_COMPOSE_FILE="${SDK_PATH}/openfactory-infra/docker-compose.traefik.yml"
 FAN_OUT_LAYER_COMPOSE_FILE="${SDK_PATH}/openfactory-fanoutlayer/docker-compose.yml"
 
 # Tear down fan-out layer first
 echo "🐳  Stopping OpenFactory fan-out layer..."
 docker compose -f "$FAN_OUT_LAYER_COMPOSE_FILE" -p fan-out-layer down -v
+
+# Tear down Traefik
+echo "🐳  Stopping Traefik..."
+docker compose -f "$TRAEFIK_COMPOSE_FILE" -p traefik down -v
 
 # Tear down Kafka cluster
 echo "🐳  Stopping Kafka cluster..."
