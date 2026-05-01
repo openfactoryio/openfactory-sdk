@@ -4,7 +4,8 @@ Installs a simulated OpenFactory infrastructure (Kafka Cluster and ksqlDB) in a 
 
 ## 🐳 Deploy OpenFactory Infrastructure in a Dev Container
 
-Once installed, the feature automatically sets up a simulated OpenFactory infrastructure inside your development environment.
+Once installed, the feature automatically sets up a simulated OpenFactory infrastructure inside your development environment
+including Treafik routing (with base domain `openfactory.local`).
 
 The simulated infrastructure can be deployed with:
 ```bash
@@ -102,6 +103,84 @@ For advanced use cases, the feature also exposes the following optional settings
   ```bash
   ofa --help
   ```
+
+## 🌐 Access Applications API (Traefik Routing)
+
+OpenFactory applications deployed inside the dev container are exposed via **Traefik**, allowing you to access them from your browser.
+
+There are two ways to access applications:
+
+### 1️⃣ Inside the Dev Container (recommended for development)
+
+Applications are available via DNS-based hostnames:
+```bash
+http://<app-uuid>.openfactory.local
+```
+
+Example:
+```bash
+curl http://demo-fastapi-app.openfactory.local/docs
+```
+
+This works because the feature configures internal DNS using `dnsmasq`.
+
+### 2️⃣ From your Host Machine (browser access)
+
+To access applications from your host machine, OpenFactory provides **path-based routing via localhost**.
+
+#### Step 1: Forward port 80 in your devcontainer
+
+Add to your `.devcontainer/devcontainer.json`:
+```json
+{
+  "forwardPorts": [80],
+  "portsAttributes": {
+    "80": {
+      "label": "Traefik",
+      "onAutoForward": "openBrowser"
+    }
+  }
+}
+```
+
+#### Step 2: Access applications via localhost
+
+Applications are available at:
+```bash
+http://localhost/<app-uuid>
+```
+
+Example:
+```bash
+http://localhost/demo-fastapi-app/docs
+```
+The Traefik dahsboard itself is accesible via
+```bash
+http://loalhost/dashboard/
+```
+
+## ⚙️ How it works
+
+* Traefik routes requests using:
+
+  * **Host-based routing** inside the container
+    ```
+    <app-uuid>.openfactory.local
+    ```
+  * **Path-based routing** from the host
+    ```
+    localhost/<app-uuid>
+    ```
+
+* When using path-based routing, OpenFactory automatically sets:
+
+  ```bash
+  OPENFACTORY_ROOT_PATH=/<app-name>
+  ```
+  This allows applications to correctly generate URLs (e.g. Swagger, redirects).
+
+> 💡 Tip: You can verify DNS inside the container with:
+> `getent hosts <app-name>.openfactory.local`
 
 ## 📦 Use cases
 
