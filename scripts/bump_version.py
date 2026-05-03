@@ -39,7 +39,47 @@ Dependency:
 from pathlib import Path
 import sys
 import json
+import re
 from tomlkit import parse, dumps
+
+
+def pep440_to_semver(version: str) -> str:
+    """
+    Convert a PEP 440 version string to a semver-compatible version.
+
+    This is required for devcontainer feature publishing, which enforces
+    strict semantic versioning. Python pre-release versions such as
+    "rc", "a", and "b" are translated accordingly.
+
+    Examples:
+        0.5.4rc1 -> 0.5.4-rc.1
+        0.5.4a2  -> 0.5.4-alpha.2
+        0.5.4b3  -> 0.5.4-beta.3
+        0.5.4    -> 0.5.4
+
+    Args:
+        version (str): A version string following PEP 440 conventions.
+
+    Returns:
+        str: A semver-compatible version string suitable for devcontainer features.
+    """
+    version_original = version
+
+    patterns = [
+        (r"^(\d+\.\d+\.\d+)rc(\d+)$", r"\1-rc.\2"),
+        (r"^(\d+\.\d+\.\d+)a(\d+)$", r"\1-alpha.\2"),
+        (r"^(\d+\.\d+\.\d+)b(\d+)$", r"\1-beta.\2"),
+    ]
+
+    for pattern, replacement in patterns:
+        if re.fullmatch(pattern, version):
+            converted = re.sub(pattern, replacement, version)
+            print(f"[normalize] {version_original} → {converted}")
+            return converted
+
+    # No change
+    print(f"[normalize] {version_original} → {version_original} (no change)")
+    return version_original
 
 
 def bump_pyproject_version(version: str) -> None:
@@ -129,7 +169,8 @@ def bump_infra_feature_version(version: str) -> None:
         data["version"] = new_version
         data["options"]["openfactory-version"]["default"] = "main"
     else:
-        data["version"] = version
+        semver_version = pep440_to_semver(version)
+        data["version"] = semver_version
         data["options"]["openfactory-version"]["default"] = f"v{version}"
 
     with json_path.open("w", encoding="utf-8") as f:
@@ -185,7 +226,8 @@ def bump_opcua_feature_version(version: str) -> None:
         data["options"]["opcua-gateway-version"]["default"] = "main"
         data["options"]["opcua-coordinator-version"]["default"] = "main"
     else:
-        data["version"] = version
+        semver_version = pep440_to_semver(version)
+        data["version"] = semver_version
         data["options"]["opcua-gateway-version"]["default"] = f"v{version}"
         data["options"]["opcua-coordinator-version"]["default"] = f"v{version}"
 
