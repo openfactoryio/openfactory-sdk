@@ -22,9 +22,7 @@
     }
   },
   "containerEnv": {
-    "OPENFACTORY_ENV": "dev",
     "ENVIRONMENT": "local",
-    "DEPLOYMENT_PLATFORM": "docker",
     "OPENFACTORY_UNS_SCHEMA": "/workspaces/openfactory-sdk/.devcontainer/uns.yml"
   },
   "forwardPorts": [80],

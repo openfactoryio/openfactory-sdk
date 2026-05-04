@@ -83,6 +83,9 @@ For advanced use cases, the feature also exposes the following optional settings
   CONTAINER_IP=<DEV_CONTAINER-IP>
   KAFKA_BROKER=$CONTAINER_IP:9092,broker:29092
   KSQLDB_URL=http://$CONTAINER_IP:8088
+  OPENFACTORY_VERSION=<openfactory-version>
+  OPENFACTORY_BASE_DOMAIN=openfactory.local
+  OPENFACTORY_ENV=dev
   ```
   where `<DEV_CONTAINER-IP>` is automatically determined for your Dev Container.
 

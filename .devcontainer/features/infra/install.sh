@@ -61,6 +61,7 @@ echo "export OPENFACTORY_VERSION=\"${OPENFACTORY_VERSION}\"" > /etc/profile.d/00
 echo "export ASSET_FORWARDER_VERSION=\"${EFFECTIVE_VERSION}\"" >> /etc/profile.d/00-openfactory-sdk.sh
 echo "export ASSET_ROUTER_VERSION=\"${EFFECTIVE_VERSION}\"" >> /etc/profile.d/00-openfactory-sdk.sh
 echo "export OPENFACTORY_BASE_DOMAIN=\"openfactory.local\"" >> /etc/profile.d/00-openfactory-sdk.sh
+echo "export OPENFACTORY_ENV=\"dev\"" >> /etc/profile.d/00-openfactory-sdk.sh
 
 # Append runtime-dependent variables
 echo "🛠️ Setting container IP address and environment variables..."
