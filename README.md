@@ -39,7 +39,7 @@ where `XX` is the Python version you wish to use (currently 12, 13 or 14).
 
 These developers are building OpenFactory applications for a **specific OpenFactory version**. 
 They should **pin the SDK feature version** to match the version running in their factory.
-It is further recommended to pin the version of the base image (e.g. `ghcr.io/openfactoryio/devcontainer:0.4.8`) in the same way.
+It is further recommended to pin the version of the base image (e.g. `ghcr.io/openfactoryio/devcontainer-py3.14:v0.5.2`) in the same way.
 
 Example `.devcontainer/devcontainer.json`:
 
