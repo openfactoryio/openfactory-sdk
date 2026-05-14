@@ -1,0 +1,26 @@
+{
+  "id": "nfs-server",
+  "version": "0.5.4",
+  "name": "OpenFactory NFS Server",
+  "description": "Provides a mocked NFS server suitable for the OpenFactory SDK.",
+  "options": {
+    "nfs-mountpoint": {
+      "type": "string",
+      "default": "/ofa/nfsvolume",
+      "description": "NFS mountpoint"
+    },
+    "nfs-uid": {
+      "type": "string",
+      "default": "1200",
+      "description": "UID of the owner of the exported NFS mountpoint"
+    },
+    "nfs-gid": {
+      "type": "string",
+      "default": "1200",
+      "description": "GID of the owner of the exported NFS mountpoint"
+    }
+  },
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/common-utils"
+  ]
+}

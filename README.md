@@ -17,6 +17,7 @@ Currently, the SDK provides the following Dev Container features:
 | ----------------- | ----------------------------------------------------------------- |
 | `infra`           | Simulates the OpenFactory infrastructure (Kafka Cluster + ksqlDB) |
 | `opcua-connector` | Deploys an OpenFactory OPC UA Connector for application testing   |
+| `nfs-server`      | Provides a mocked NFS server for shared filesystem testing        |
 
 Each feature can be configured independently and further combined, depending on your development needs.
 
@@ -28,6 +29,7 @@ Once installed, the features allow you to start and stop infrastructure and OPC 
 | ----------------- | -------------------- | ---------------------- |
 | OpenFactory Infra | `spinup`             | `teardown`             |
 | OPC UA Connector  | `opcua-connector-up` | `opcua-connector-down` |
+| Mocked NFS Server | `nfs-start`          | `nfs-stop`             |
 
 
 ## 🚀 Usage
@@ -47,13 +49,14 @@ Example `.devcontainer/devcontainer.json`:
 {
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:2": {},
-    "ghcr.io/openfactoryio/openfactory-sdk/infra:0.4.8": {},
-    "ghcr.io/openfactoryio/openfactory-sdk/opcua-connector:0.4.8": {}
+    "ghcr.io/openfactoryio/openfactory-sdk/infra:0.5.5": {},
+    "ghcr.io/openfactoryio/openfactory-sdk/opcua-connector:0.5.5": {},
+    "ghcr.io/openfactoryio/openfactory-sdk/nfs-server:0.5.5": {}
   }
 }
 ```
 
-> 💡 **Note:** The **feature version** must match the OpenFactory version running in your factory (e.g. 0.4.8). Pinning ensures the SDK features remain compatible with the OpenFactory deployment you are targeting.
+> 💡 **Note:** The **feature version** must match the OpenFactory version running in your factory (e.g. 0.5.5). Pinning ensures the SDK features remain compatible with the OpenFactory deployment you are targeting.
 
 ### 2️⃣ OpenFactory Core Developers
 
@@ -89,6 +92,9 @@ Each feature provides optional configuration:
 |                   | `useLocalSdk`             | Use the local SDK source code instead of installing from GitHub | boolean | `false`                     |
 | `opcua-connector` | `opcua-connector-version` | Git ref of the OPC UA Connector image to install                | string  | *(matches feature version)* |
 |                   | `useLocalSdk`             | Use the local SDK source code instead of installing from GitHub | boolean | `false`                     |
+| `nfs-server`      | `nfs-mountpoint`          | Path exported by the mocked NFS server                          | string  | `/ofa/nfsvolume`            |
+|                   | `nfs-uid`                 | UID owning the exported NFS mountpoint                          | string  | `1200`                      |
+|                   | `nfs-gid`                 | GID owning the exported NFS mountpoint                          | string  | `1200`                      |
 
 ---
 
@@ -127,6 +133,29 @@ Each feature provides optional configuration:
   ```bash
   opcua-connector-up    – launch OPC UA Connector
   opcua-connector-down  – stop OPC UA Connector
+  ```
+
+**Mocked NFS Server (`nfs-server`) Feature:**
+
+* Install helper scripts to manage a mocked NFS server
+* Create a mocked NFS server container using Docker
+* Create a persistent Docker volume for NFS data
+* Define environment variables:
+
+  ```bash
+  NFS_CONTAINER_NAME=devcontainer-nfs
+  NFS_VOLUME_NAME=devcontainer-nfsdata
+  NFS_NETWORK_NAME=factory-net
+
+  NFS_MOUNTPOINT=<value of feature option id nfs-mountpoint>
+  NFS_UID=<value of feature option id nfs-uid>
+  NFS_GID=<value of feature option id nfs-gid>
+  ```
+* Add aliases:
+
+  ```bash
+  nfs-start  – start mocked NFS server
+  nfs-stop   – stop mocked NFS server
   ```
 
 All environment variables and aliases are available in every Bash terminal inside the Dev Container.

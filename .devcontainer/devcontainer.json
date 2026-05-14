@@ -19,7 +19,8 @@
       "useLocalSdk": true,
       "opcua-coordinator-version": "latest",
       "opcua-gateway-version": "latest"
-    }
+    },
+    "./features/nfs-server": {}
   },
   "containerEnv": {
     "ENVIRONMENT": "local",
@@ -36,7 +37,13 @@
   "customizations": {
     "vscode": {
       "settings": {
-        "terminal.integrated.shell.linux": "/bin/bash"
+        "terminal.integrated.defaultProfile.linux": "bash-login",
+        "terminal.integrated.profiles.linux": {
+          "bash-login": {
+            "path": "/bin/bash",
+            "args": ["-l"]
+          }
+        }
       },
       "extensions": [
         "ms-python.python",
