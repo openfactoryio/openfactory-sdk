@@ -10,7 +10,7 @@
     }
   },
   "features": {
-    "ghcr.io/devcontainers/features/docker-in-docker:2.16.1": {},
+    "ghcr.io/devcontainers/features/docker-in-docker:2.17.0": {},
     "./features/infra": {
       "useLocalSdk": true,
       "openfactory-version": "main"
