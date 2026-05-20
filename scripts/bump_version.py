@@ -132,9 +132,8 @@ def bump_infra_feature_version(version: str) -> None:
     """
     Update the version for the infra feature.
 
-    If the version is "dev", it transforms the current version to "<base>-dev.1"
-    and sets openfactory-version.default to "main". Otherwise, it sets the version
-    and default tag based on the semantic version provided.
+    If the version starts with "0.0.0-dev", it sets openfactory-version.default to "main".
+    Otherwise, it sets the version and default tag based on the semantic version provided.
 
     Args:
         version (str): The new version string, e.g., "0.4.0" or the special keyword "dev".
@@ -163,10 +162,7 @@ def bump_infra_feature_version(version: str) -> None:
     old_version = data["version"]
     old_default = data["options"]["openfactory-version"]["default"]
 
-    if version == "dev":
-        base_version = old_version.split("-")[0]
-        new_version = f"{base_version}-dev.1"
-        data["version"] = new_version
+    if version.startswith("0.0.0-dev"):
         data["options"]["openfactory-version"]["default"] = "main"
     else:
         semver_version = pep440_to_semver(version)
@@ -185,8 +181,7 @@ def bump_opcua_feature_version(version: str) -> None:
     """
     Update the version for the OPC UA Connector feature.
 
-    If version is "dev", it transforms the current version to "<base>-dev.1"
-    and sets opcua-connector-version.default to "main".
+    If version is "0.0.0-dev", it sets opcua-connector-version.default to "latest".
     Otherwise, sets version and default tag based on the semantic version provided.
 
     Args:
@@ -219,12 +214,9 @@ def bump_opcua_feature_version(version: str) -> None:
     old_default_gateway = data["options"]["opcua-gateway-version"]["default"]
     old_default_coordinator = data["options"]["opcua-coordinator-version"]["default"]
 
-    if version == "dev":
-        base_version = old_version.split("-")[0]
-        new_version = f"{base_version}-dev.1"
-        data["version"] = new_version
-        data["options"]["opcua-gateway-version"]["default"] = "main"
-        data["options"]["opcua-coordinator-version"]["default"] = "main"
+    if version.startswith("0.0.0-dev"):
+        data["options"]["opcua-gateway-version"]["default"] = "latest"
+        data["options"]["opcua-coordinator-version"]["default"] = "latest"
     else:
         semver_version = pep440_to_semver(version)
         data["version"] = semver_version
