@@ -162,11 +162,12 @@ def bump_infra_feature_version(version: str) -> None:
     old_version = data["version"]
     old_default = data["options"]["openfactory-version"]["default"]
 
+    semver_version = pep440_to_semver(version)
+    data["version"] = semver_version
+
     if version.startswith("0.0.0-dev"):
         data["options"]["openfactory-version"]["default"] = "main"
     else:
-        semver_version = pep440_to_semver(version)
-        data["version"] = semver_version
         data["options"]["openfactory-version"]["default"] = f"v{version}"
 
     with json_path.open("w", encoding="utf-8") as f:
@@ -214,12 +215,13 @@ def bump_opcua_feature_version(version: str) -> None:
     old_default_gateway = data["options"]["opcua-gateway-version"]["default"]
     old_default_coordinator = data["options"]["opcua-coordinator-version"]["default"]
 
+    semver_version = pep440_to_semver(version)
+    data["version"] = semver_version
+
     if version.startswith("0.0.0-dev"):
         data["options"]["opcua-gateway-version"]["default"] = "latest"
         data["options"]["opcua-coordinator-version"]["default"] = "latest"
     else:
-        semver_version = pep440_to_semver(version)
-        data["version"] = semver_version
         data["options"]["opcua-gateway-version"]["default"] = f"v{version}"
         data["options"]["opcua-coordinator-version"]["default"] = f"v{version}"
 
