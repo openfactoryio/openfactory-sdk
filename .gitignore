@@ -209,3 +209,4 @@ __marimo__/
 # local files
 local/
 secrets/
+devcontainer-lock.json
