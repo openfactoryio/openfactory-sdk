@@ -1,0 +1,39 @@
+devices:
+  ivac:
+    uuid: IVAC
+
+    connector:
+      type: opcua
+
+      server:
+        uri: opc.tcp://10.68.14.15:4840
+
+      variables:
+        A1ToolPlus:
+          browse_path: 0:Root/0:Objects/2:IVAC/2:A1ToolPlus
+          tag: IVAC.A1ToolPlus
+        A2ToolPlus:
+          browse_path: 0:Root/0:Objects/2:IVAC/2:A2ToolPlus
+          tag: IVAC.A2ToolPlus
+        A3ToolPlus:
+          browse_path: 0:Root/0:Objects/2:IVAC/2:A3ToolPlus
+          tag: IVAC.A3ToolPlus
+        A1BlastGate:
+          browse_path: 0:Root/0:Objects/2:IVAC/2:A1BlastGate
+          tag: IVAC.A1BlastGate
+        A2BlastGate:
+          browse_path: 0:Root/0:Objects/2:IVAC/2:A2BlastGate
+          tag: IVAC.A2BlastGate
+        A3BlastGate:
+          browse_path: 0:Root/0:Objects/2:IVAC/2:A3BlastGate
+          tag: IVAC.A3BlastGate
+
+      methods:
+        BuzzerControl:
+          browse_path: 0:Root/0:Objects/2:IVAC/2:BuzzerControl
+
+        SimulationMode:
+          browse_path: 0:Root/0:Objects/2:IVAC/2:SimulationMode
+        
+   
+

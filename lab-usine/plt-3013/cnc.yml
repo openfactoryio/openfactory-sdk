@@ -1,0 +1,71 @@
+devices:
+  cnc:
+    uuid: CNC
+
+    connector:
+      type: opcua
+
+      server:
+        uri: opc.tcp://virtual-cnc-adapter:4842
+
+      variables:
+        PositionX:
+          browse_path: 0:Root/0:Objects/2:CNC/2:CNC_Structure/2:PositionX
+          tag: CNC.CNC_Structure.PositionX
+        PositionY:
+          browse_path: 0:Root/0:Objects/2:CNC/2:CNC_Structure/2:PositionY
+          tag: CNC.CNC_Structure.PositionY
+        PositionZ:
+          browse_path: 0:Root/0:Objects/2:CNC/2:CNC_Structure/2:PositionZ
+          tag: CNC.CNC_Structure.PositionZ
+        RotationY:
+          browse_path: 0:Root/0:Objects/2:CNC/2:CNC_Structure/2:RotationY
+          tag: CNC.CNC_Structure.RotationY
+
+        BridgePositionZ:
+          browse_path: 0:Root/0:Objects/2:CNC/2:CNC_Structure/2:CNC_Bridge/2:PositionZ
+          tag: CNC.CNC_Structure.CNC_Bridge.PositionZ
+          
+        RackPositionX:
+          browse_path: 0:Root/0:Objects/2:CNC/2:CNC_Structure/2:CNC_Bridge/2:CNC_Rack/2:PositionX
+          tag: CNC.CNC_Structure.CNC_Bridge.CNC_Rack.PositionX
+          
+        SpindlePositionY:
+          browse_path: 0:Root/0:Objects/2:CNC/2:CNC_Structure/2:CNC_Bridge/2:CNC_Rack/2:CNC_Spindle/2:PositionY
+          tag: CNC.CNC_Structure.CNC_Bridge.CNC_Rack.CNC_Spindle.PositionY
+
+        SpindleSpeed:
+          browse_path: 0:Root/0:Objects/2:CNC/2:CNC_Structure/2:CNC_Bridge/2:CNC_Rack/2:CNC_Spindle/2:Speed
+          tag: CNC.CNC_Structure.CNC_Bridge.CNC_Rack.CNC_Spindle.CNC_Spindle.Speed
+
+        SuccionZone1Etat:
+          browse_path: 0:Root/0:Objects/2:CNC/2:CNC_Succion_zone1/2:Etat
+          tag: CNC.CNC_Succion_zone1.Etat
+        SuccionZone2Etat:
+          browse_path: 0:Root/0:Objects/2:CNC/2:CNC_Succion_zone2/2:Etat
+          tag: CNC.CNC_Succion_zone2.Etat
+        SuccionZone3Etat:
+          browse_path: 0:Root/0:Objects/2:CNC/2:CNC_Succion_zone3/2:Etat
+          tag: CNC.CNC_Succion_zone3.Etat
+        SuccionZone4Etat:
+          browse_path: 0:Root/0:Objects/2:CNC/2:CNC_Succion_zone4/2:Etat
+          tag: CNC.CNC_Succion_zone4.Etat
+        SuccionZone5Etat:
+          browse_path: 0:Root/0:Objects/2:CNC/2:CNC_Succion_zone5/2:Etat
+          tag: CNC.CNC_Succion_zone5.Etat
+        SuccionZone6Etat:
+          browse_path: 0:Root/0:Objects/2:CNC/2:CNC_Succion_zone6/2:Etat
+          tag: CNC.CNC_Succion_zone6.Etat
+
+        SuccionZone1PositionX:
+          browse_path: 0:Root/0:Objects/2:CNC/2:CNC_Succion_zone1/2:PositionX
+          tag: CNC.CNC_Succion_zone1.PositionX
+        SuccionZone1PositionY:
+          browse_path: 0:Root/0:Objects/2:CNC/2:CNC_Succion_zone1/2:PositionY
+          tag: CNC.CNC_Succion_zone1.PositionY
+        SuccionZone1DimensionX:
+          browse_path: 0:Root/0:Objects/2:CNC/2:CNC_Succion_zone1/2:DimensionX
+          tag: CNC.CNC_Succion_zone1.DimensionX
+        SuccionZone1DimensionY:
+          browse_path: 0:Root/0:Objects/2:CNC/2:CNC_Succion_zone1/2:DimensionY
+          tag: CNC.CNC_Succion_zone1.DimensionY

@@ -1,0 +1,26 @@
+devices:
+  dust-trak:
+    uuid: DUSTTRAK
+
+    connector:
+      type: opcua 
+      
+      server:
+        uri: opc.tcp://192.168.44.1:4841
+
+      variables:
+        pm1_concentration:
+          browse_path: 0:Root/0:Objects/2:DustTrak/2:pm1_concentration
+          tag: DustTrak.pm1_concentration
+
+        pm2_5_concentration:
+          browse_path: 0:Root/0:Objects/2:DustTrak/2:pm2_5_concentration
+          tag: DustTrak.pm2_5_concentration
+
+        pm4_concentration:
+          browse_path: 0:Root/0:Objects/2:DustTrak/2:pm4_concentration
+          tag: DustTrak.pm4_concentration
+
+        pm10_concentration:
+          browse_path: 0:Root/0:Objects/2:DustTrak/2:pm10_concentration
+          tag: DustTrak.pm10_concentration

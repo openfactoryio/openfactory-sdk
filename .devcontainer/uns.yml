@@ -1,7 +1,9 @@
-# minimal UNS
 namespace_structure:
-    - inc: OpenFactory
-    - asset: ANY
-    - attribute: ANY
+  - inc: LabUsine
+  - site: PLT
+  - area: ["PLT-0313"]
+  - asset: ANY
+  - attribute: ANY
 
-uns_template: "inc/asset/attribute"
+uns_template: 'inc/site/area/asset/attribute'
+

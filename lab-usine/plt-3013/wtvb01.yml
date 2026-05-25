@@ -1,0 +1,76 @@
+devices:
+  wtvb01:
+    uuid: WTVB01
+
+    connector:
+      type: opcua 
+      
+      server:
+        uri: opc.tcp://192.168.183.1:4842
+
+      variables:
+        temp:
+          browse_path: 0:Root/0:Objects/2:WTVB01/2:temp
+          tag: WTVB01.temp
+
+        acc_x:
+          browse_path: 0:Root/0:Objects/2:WTVB01/2:acc_x
+          tag: WTVB01.acc_x
+
+        acc_y:
+          browse_path: 0:Root/0:Objects/2:WTVB01/2:acc_y
+          tag: WTVB01.acc_y
+
+        acc_z:
+          browse_path: 0:Root/0:Objects/2:WTVB01/2:acc_z
+          tag: WTVB01.acc_z
+          tag: WTVB01.pm4_concentration
+
+        vx:
+          browse_path: 0:Root/0:Objects/2:WTVB01/2:vx
+          tag: WTVB01:vx
+
+        vy:
+          browse_path: 0:Root/0:Objects/2:WTVB01/2:vy
+          tag: WTVB01.vy
+
+        vz:
+          browse_path: 0:Root/0:Objects/2:WTVB01/2:vz
+          tag: WTVB01.vz
+
+        angle_x:
+          browse_path: 0:Root/0:Objects/2:WTVB01/2:angle_x
+          tag: WTVB01:angle_x
+
+        angle_y:
+          browse_path: 0:Root/0:Objects/2:WTVB01/2:angle_y
+          tag: WTVB01:angle_y
+
+        angle_z:
+          browse_path: 0:Root/0:Objects/2:WTVB01/2:angle_z
+          tag: WTVB01:angle_z
+          tag: WTVB01.vy
+
+        dx:
+          browse_path: 0:Root/0:Objects/2:WTVB01/2:dx
+          tag: WTVB01:dx
+
+        dy:
+          browse_path: 0:Root/0:Objects/2:WTVB01/2:dy
+          tag: WTVB01:dy
+
+        dz:
+          browse_path: 0:Root/0:Objects/2:WTVB01/2:dz
+          tag: WTVB01:dz
+
+        hx:
+          browse_path: 0:Root/0:Objects/2:WTVB01/2:hx
+          tag: WTVB01:hx
+
+        hy:
+          browse_path: 0:Root/0:Objects/2:WTVB01/2:hy
+          tag: WTVB01:hy
+
+        hz:
+          browse_path: 0:Root/0:Objects/2:WTVB01/2:hz
+          tag: WTVB01:hz
