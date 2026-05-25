@@ -41,3 +41,9 @@ If you're adding a new automation or maintenance script, place it in this direct
 ## Notes
 
 These scripts are intentionally kept lightweight and free of external dependencies where possible, to ease integration in constrained environments.
+
+## Run virtual devices script
+This script is an automation tool designed to dynamically spin up and manage virtual OPC-UA device adapters (such as `virtual-cnc-adapter`, `virtual-dust-trak`, etc.) as Docker containers. The command line names to start specific containers are defined in the IMAGE_CONFIGS dict at the top of the script.
+
+Ex.: To run virtual cnc, you would run this command: `python ./scripts/run_virtual_devices.py cnc`.
+To run cnc and dusttrak you would run this command `python ./scripts/run_virtual_devices.py cnc dusttrak`
