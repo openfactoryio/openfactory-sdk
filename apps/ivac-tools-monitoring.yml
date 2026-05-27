@@ -1,0 +1,6 @@
+apps:
+  ivac_tools_monitoring:
+   uuid: IVAC-TOOLS-MONITORING
+   image: ghcr.io/openfactorylabusine/ivac_tools_monitoring:latest
+   networks:
+    - factory-net

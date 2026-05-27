@@ -1,0 +1,22 @@
+apps:
+  openfactory_api:
+    uuid: EQUIPMENTS-API
+    image: ghcr.io/openfactorylabusine/equipments-api:latest
+    networks:
+      - factory-net
+    routing:
+      expose: true
+      port: 8000
+      hostname: equipments-api
+
+  ivac_tools_monitoring:
+   uuid: IVAC-TOOLS-MONITORING
+   image: ghcr.io/openfactorylabusine/ivac_tools_monitoring:latest
+   networks:
+    - factory-net
+
+  dusttrak_moving_averages:
+   uuid: DUSTTRAK-MOVING-AVERAGES
+   image: ghcr.io/openfactorylabusine/dusttrak_moving_averages:latest
+   networks:
+    - factory-net

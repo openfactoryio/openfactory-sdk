@@ -1,0 +1,6 @@
+apps:
+  dusttrak_moving_averages:
+   uuid: DUSTTRAK-MOVING-AVERAGES
+   image: ghcr.io/openfactorylabusine/dusttrak_moving_averages:latest
+   networks:
+    - factory-net

@@ -1,0 +1,10 @@
+apps:
+  openfactory_api:
+      uuid: EQUIPMENTS-API
+      image: ghcr.io/openfactorylabusine/equipments-api:latest
+      networks:
+        - factory-net
+      routing:
+        expose: true
+        port: 8000
+        hostname: equipments-api
