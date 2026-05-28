@@ -188,7 +188,7 @@ If you're contributing to the SDK itself or developing Dev Container features, y
 > ⚠️ The local SDK path (`/workspaces/openfactory-sdk`) is only available **after** the container starts — so editable installs must happen via `postCreateCommand` or `postStartCommand`, not inside the feature itself.
 
 
-## Quick start CNC
+## Quick start
 
 0. Assurez vous d'avoir Docker d'installé. Aussi, pour pouvoir ouvrir OpenFactory sur une machine Windows, il faut d'abord s'assurer d'avoir WSL2. Le devcontainer doit être ouvert à partir d'un environnement Linux/Unix pour qu'il fonctionne (faites 'reopen in container' pour ouvrir le devcontainer).
 
@@ -196,9 +196,45 @@ If you're contributing to the SDK itself or developing Dev Container features, y
 
 2. Pour démarrer OpenFactory, exécuter la commande `spinup` et `opcua-connector-up`. La commande spinup permet de démarrer l'infrastructure d'OpenFactory et opcua-connector-up permet de démarrer le container qui écoute les données du serveur OPC-UA venant du device.
 
-3. Pour démarrer tous les components nécessaires à la connection à la CNC virtuelle, vous pouvez exécuter `python ./scripts/spinup_cnc.py`à partir du root du projet. ** Il faut s'assurer que websockets soit installé sur l'environnement avant de lancer le script avec `pip install websockets`.
+3. Pour connecter un adaptateur ou un équipement à OpenFactory, il faut définir la connection à l'adaptateur/équipement dans un fichier .yml de la façon suivante:
+```
+devices:
+  <NomDevice>>:
+    uuid: <NomDevice>
 
-4. Pour s'assurer du bon fonctionnement de l'API et visualiser les données venant de la CNC virtuelle, vous pouvez exécuter `python dummy_client.py` pour avoir la liste des équipements disponibles, puis `python dummy_client.py cnc` pour avoir les mises à jour en temps réel les données de la CNC. 
+    connector:
+      type: opcua
+
+      server:
+        uri: opc.tcp://<AdresseIPServeurOPCUA>:<PORTServeurOPCUA>
+
+      variables:
+        <NomVariable>:
+          browse_path: 0:Root/0:Objects/2:<NomDevice>/2:<NomVariable>
+          tag: <NomDevice>.<NomVariable>
+
+      methods:
+        <NomMéthode>:
+          browse_path: 0:Root/0:Objects/2:<NomDevice>/2:<NomMéthode>
+        
+```
+Puis pour le démarrer, il faut rouler la commande `ofa device up <path_fichier_yml>`
+
+4. De la même façon, pour rouler une application native à OpenFactory, il faut la définir dans un fichier yml, de cette façon:
+```
+apps:
+  <NomApp>:
+   uuid: <UUID-APP> (choix arbitraire)
+   image: <NomImageDocker>
+   networks:
+    - factory-net
+```
+Puis, pour la démarrer, il faut rouler la commande `ofa apps up <path_fichier_yml>`
 
 5. Pour arrêter correctement OpenFactory, il faut exécuter la commande `teardown` ainsi que `opcua-connector-down`. S'il y a des containers d'apps ou d'adapters/devices qui ont été pulled à l'extérieur de OpenFactory, il faut les enlever manuellement (soit par `docker kill $(docker ps -q)` ou avec l'extension containers de VSCode)
 
+### Cas d'utilisation: accéder aux données simulées de la CNC par l'API websockets
+
+1. Pour démarrer tous les components nécessaires à la connection à la CNC virtuelle, vous pouvez exécuter `python ./scripts/spinup_cnc.py`à partir du root du projet. 
+
+2. Pour s'assurer du bon fonctionnement de l'API et visualiser les données venant de la CNC virtuelle, vous pouvez exécuter `python dummy_client.py` pour avoir la liste des équipements disponibles, puis `python dummy_client.py cnc` pour avoir les mises à jour en temps réel les données de la CNC.  ** Il faut s'assurer que websockets soit installé sur l'environnement avant de lancer le script avec `pip install websockets`.
