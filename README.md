@@ -1,7 +1,7 @@
 # OpenFactory-SDK
 [![version](https://img.shields.io/github/release/openfactoryio/openfactory-sdk.svg?color=blue)](https://github.com/openfactoryio/openfactory-sdk/releases)
 [![OpenFactory SDK Feature](https://img.shields.io/badge/devcontainer-feature-blue?logo=visualstudiocode)](https://github.com/openfactoryio/openfactory-sdk/tree/main/.devcontainer/features)
-![License](https://img.shields.io/github/license/openfactoryio/openfactory-sdk?style=flat-square)
+[![License](https://img.shields.io/github/license/openfactoryio/openfactory-sdk)](LICENSE)
 
 **OpenFactory Software Development Kit**
 
