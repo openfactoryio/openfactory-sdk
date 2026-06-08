@@ -15,8 +15,10 @@
       "useLocalSdk": true,
       "openfactory-version": "main"
     },
-    "./features/opcua-connector": {
+    "./features/connectors": {
       "useLocalSdk": true,
+      "shdr-coordinator-version": "latest",
+      "shdr-gateway-version": "latest",
       "opcua-coordinator-version": "latest",
       "opcua-gateway-version": "latest"
     },

@@ -1,0 +1,55 @@
+# ---------------------------------------------------------------------------------------
+# 🏭 OpenFactory configuration file for the OPC UA Connector
+#
+# Deploy with:
+#   ofa apps up app_opcua_connector.yml
+# ---------------------------------------------------------------------------------------
+# Environment variables:
+#
+# Optional:
+#   OPCUA_COORDINATOR_LOG_LEVEL    Log level of coordinator (default: INFO)
+#   OPCUA_GATEWAY_LOG_LEVEL        Log level of gateways (default: INFO)
+#
+# ---------------------------------------------------------------------------------------
+
+apps:
+
+  opcua-coordinator:
+    uuid: OPCUA-COORDINATOR
+    image: ghcr.io/openfactoryio/opcua-coordinator:${OPCUA_COORDINATOR_VERSION}
+    environment:
+      - LOG_LEVEL=${OPCUA_COORDINATOR_LOG_LEVEL:-INFO}
+      - PROMETHEUS_DISABLE_CREATED_SERIES=true
+    routing:
+      expose: true
+      port: 4000
+      hostname: opcua-coordinator
+    networks:
+      - factory-net
+
+
+  opcua-gateway-1:
+    uuid: OPCUA-GATEWAY-1
+    image: ghcr.io/openfactoryio/opcua-gateway:${OPCUA_GATEWAY_VERSION}
+    environment:
+      - LOG_LEVEL=${OPCUA_GATEWAY_LOG_LEVEL:-INFO}
+      - PROMETHEUS_DISABLE_CREATED_SERIES=true
+    routing:
+      expose: true
+      port: 4000
+      hostname: opcua-gateway-1
+    networks:
+      - factory-net
+
+  opcua-gateway-2:
+    uuid: OPCUA-GATEWAY-2
+    image: ghcr.io/openfactoryio/opcua-gateway:${OPCUA_GATEWAY_VERSION}
+    environment:
+      - LOG_LEVEL=${OPCUA_GATEWAY_LOG_LEVEL:-INFO}
+      - PROMETHEUS_DISABLE_CREATED_SERIES=true
+    routing:
+      expose: true
+      port: 4000
+      hostname: opcua-gateway-2
+    networks:
+      - factory-net
