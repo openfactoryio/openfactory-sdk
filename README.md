@@ -1,5 +1,5 @@
 # OpenFactory-SDK
-[![version](https://img.shields.io/github/release/openfactoryio/openfactory-core.svg?color=blue)](https://github.com/openfactoryio/openfactory-sdk/releases)
+[![version](https://img.shields.io/github/release/openfactoryio/openfactory-sdk.svg?color=blue)](https://github.com/openfactoryio/openfactory-sdk/releases)
 [![OpenFactory SDK Feature](https://img.shields.io/badge/devcontainer-feature-blue?logo=visualstudiocode)](https://github.com/openfactoryio/openfactory-sdk/tree/main/.devcontainer/features)
 ![License](https://img.shields.io/github/license/openfactoryio/openfactory-sdk?style=flat-square)
 
@@ -16,20 +16,20 @@ Currently, the SDK provides the following Dev Container features:
 | Feature ID        | Description                                                       |
 | ----------------- | ----------------------------------------------------------------- |
 | `infra`           | Simulates the OpenFactory infrastructure (Kafka Cluster + ksqlDB) |
-| `opcua-connector` | Deploys an OpenFactory OPC UA Connector for application testing   |
+| `connectors`      | Deploys OpenFactory Connectors                                    |
 | `nfs-server`      | Provides a mocked NFS server for shared filesystem testing        |
 
 Each feature can be configured independently and further combined, depending on your development needs.
 
 ## 🐳 Using OpenFactory-SDK in a Dev Container
 
-Once installed, the features allow you to start and stop infrastructure and OPC UA Connector services via shell aliases.
+Once installed, the features allow you to start and stop infrastructure and connector services via shell aliases.
 
-| Feature           | Start Command        | Stop Command           |
-| ----------------- | -------------------- | ---------------------- |
-| OpenFactory Infra | `spinup`             | `teardown`             |
-| OPC UA Connector  | `opcua-connector-up` | `opcua-connector-down` |
-| Mocked NFS Server | `nfs-start`          | `nfs-stop`             |
+| Feature           | Start Command              | Stop Command                 |
+| ----------------- | -------------------------- | ---------------------------- |
+| OpenFactory Infra | `spinup`                   | `teardown`                   |
+| Connectors        | `<connector>-connector-up` | `<connector>-connector-down` |
+| Mocked NFS Server | `nfs-start`                | `nfs-stop`                   |
 
 
 ## 🚀 Usage
@@ -48,10 +48,10 @@ Example `.devcontainer/devcontainer.json`:
 ```json
 {
   "features": {
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
-    "ghcr.io/openfactoryio/openfactory-sdk/infra:0.5.5": {},
-    "ghcr.io/openfactoryio/openfactory-sdk/opcua-connector:0.5.5": {},
-    "ghcr.io/openfactoryio/openfactory-sdk/nfs-server:0.5.5": {}
+    "ghcr.io/devcontainers/features/docker-in-docker:3.0.1": {},
+    "ghcr.io/openfactoryio/openfactory-sdk/infra:0.6.1": {},
+    "ghcr.io/openfactoryio/openfactory-sdk/connectors:0.6.1": {},
+    "ghcr.io/openfactoryio/openfactory-sdk/nfs-server:0.6.1": {}
   }
 }
 ```
@@ -67,18 +67,14 @@ Example:
 ```json
 {
   "features": {
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
-    "ghcr.io/openfactoryio/openfactory-sdk/infra:0.0.0-dev.05580d9": {
-      "openfactory-version": "main"
-    },
-    "ghcr.io/openfactoryio/openfactory-sdk/opcua-connector:0.0.0-dev.05580d9": {
-      "opcua-connector-version": "latest"
-    }
+    "ghcr.io/devcontainers/features/docker-in-docker:3.0.1": {},
+    "ghcr.io/openfactoryio/openfactory-sdk/infra:0.0.0-dev.05580d9": {},
+    "ghcr.io/openfactoryio/openfactory-sdk/connectors:0.0.0-dev.05580d9": {}
   }
 }
 ```
 
-> 📝 **Note:** The latest development version of the SDK features can be found [here](https://github.com/openfactoryio/openfactory-sdk/pkgs/container/openfactory-sdk).
+> 📝 **Note:** The latest development versions of the SDK features can be found [here](https://github.com/openfactoryio/openfactory-sdk/pkgs/container/openfactory-sdk).
 
 ---
 
@@ -86,15 +82,18 @@ Example:
 
 Each feature provides optional configuration:
 
-| Feature           | Option ID                 | Description                                                     | Type    | Default Value               |
-| ----------------- | ------------------------- | --------------------------------------------------------------- | ------- | --------------------------- |
-| `infra`           | `openfactory-version`     | Git ref (branch, tag, or commit) of OpenFactory Core to install | string  | *(matches feature version)* |
-|                   | `useLocalSdk`             | Use the local SDK source code instead of installing from GitHub | boolean | `false`                     |
-| `opcua-connector` | `opcua-connector-version` | Git ref of the OPC UA Connector image to install                | string  | *(matches feature version)* |
-|                   | `useLocalSdk`             | Use the local SDK source code instead of installing from GitHub | boolean | `false`                     |
-| `nfs-server`      | `nfs-mountpoint`          | Path exported by the mocked NFS server                          | string  | `/ofa/nfsvolume`            |
-|                   | `nfs-uid`                 | UID owning the exported NFS mountpoint                          | string  | `1200`                      |
-|                   | `nfs-gid`                 | GID owning the exported NFS mountpoint                          | string  | `1200`                      |
+| Feature           | Option ID                   | Description                                                     | Type    | Default Value               |
+| ----------------- | --------------------------- | --------------------------------------------------------------- | ------- | --------------------------- |
+| `infra`           | `openfactory-version`       | Git ref (branch, tag, or commit) of OpenFactory Core to install | string  | *(matches feature version)* |
+|                   | `useLocalSdk`               | Use the local SDK source code instead of installing from GitHub | boolean | `false`                     |
+| `connectors`      | `shdr-gateway-version`      | Git ref of the SHDR Gateway image to install                    | string  | *(matches feature version)* |
+|                   | `shdr-coordinator-version`  | Git ref of the SHDR Coordinator image to install                | string  | *(matches feature version)* |
+|                   | `opcua-coordinator-version` | Git ref of the OPC UA Coordinator image to install              | string  | *(matches feature version)* |
+|                   | `opcua-gateway-version`     | Git ref of the OPC UA Gateway image to install                  | string  | *(matches feature version)* |
+|                   | `useLocalSdk`               | Use the local SDK source code instead of installing from GitHub | boolean | `false`                     |
+| `nfs-server`      | `nfs-mountpoint`            | Path exported by the mocked NFS server                          | string  | `/ofa/nfsvolume`            |
+|                   | `nfs-uid`                   | UID owning the exported NFS mountpoint                          | string  | `1200`                      |
+|                   | `nfs-gid`                   | GID owning the exported NFS mountpoint                          | string  | `1200`                      |
 
 ---
 
@@ -110,7 +109,7 @@ Each feature provides optional configuration:
   CONTAINER_IP=<DEV_CONTAINER-IP>
   KAFKA_BROKER=$CONTAINER_IP:9092,broker:29092
   KSQLDB_URL=http://$CONTAINER_IP:8088
-  OPENFACTORY_VERION=<value of feature option id openfactory-version>
+  OPENFACTORY_VERSION=<value of feature option id openfactory-version>
   ```
 * Add aliases:
 
@@ -120,19 +119,24 @@ Each feature provides optional configuration:
   teardown  – stop infrastructure
   ```
 
-**OPC UA Connector (`opcua-connector`) Feature:**
+**Connectors (`connectors`) Feature:**
 
-* Copy OPC UA Connector Docker files into the container
-* Define environment variable:
+* Copy OpenFactory Connector configuration files into the container
+* Set environment variables:
 
   ```bash
-  OPCUA_CONNECTOR_VERSION="<version>"
+  OPCUA_GATEWAY_VERSION="<version>"
+  OPCUA_COORDINATOR_VERSION="<version>"
+  SHDR_GATEWAY_VERSION="<version>"
+  SHDR_COORDINATOR_VERSION="<version>"
   ```
 * Add aliases:
 
   ```bash
-  opcua-connector-up    – launch OPC UA Connector
-  opcua-connector-down  – stop OPC UA Connector
+  shdr-connector-up     # Launch the SHDR Connector
+  shdr-connector-down   # Stop the SHDR Connector
+  opcua-connector-up    # Launch the OPC UA Connector
+  opcua-connector-down  # Stop the OPC UA Connector
   ```
 
 **Mocked NFS Server (`nfs-server`) Feature:**
@@ -140,7 +144,7 @@ Each feature provides optional configuration:
 * Install helper scripts to manage a mocked NFS server
 * Create a mocked NFS server container using Docker
 * Create a persistent Docker volume for NFS data
-* Define environment variables:
+* Set environment variables:
 
   ```bash
   NFS_CONTAINER_NAME=devcontainer-nfs
@@ -166,7 +170,7 @@ All environment variables and aliases are available in every Bash terminal insid
 
 * [Test an OpenFactory adapter](doc/test_adapter.md)
 * Develop OpenFactory applications without a full production infrastructure
-* Experiment with the OPC UA Connector in isolation or alongside the simulated infrastructure
+* Experiment with OpenFactory Connectors in isolation or alongside the simulated infrastructure
 
 ---
 
@@ -177,7 +181,7 @@ If you're contributing to the SDK itself or developing Dev Container features, y
 ```json
 {
   "features": {
-    "ghcr.io/openfactoryio/openfactory-sdk/infra:latest": {
+    "ghcr.io/openfactoryio/openfactory-sdk/<feature>:latest": {
       "useLocalSdk": true
     }
   },
