@@ -1,27 +1,27 @@
 {
   "id": "connectors",
-  "version": "0.6.1-rc.1",
+  "version": "0.6.1",
   "name": "OpenFactory Connectors",
   "description": "Installs OpenFactory Connectors",
   "options": {
     "shdr-gateway-version": {
       "type": "string",
-      "default": "v0.6.1rc1",
+      "default": "v0.6.1",
       "description": "Git ref of the SHDR Gateway image to install"
     },
     "shdr-coordinator-version": {
       "type": "string",
-      "default": "v0.6.1rc1",
+      "default": "v0.6.1",
       "description": "Git ref of the SHDR Coordinator image to install"
     },
     "opcua-gateway-version": {
       "type": "string",
-      "default": "v0.6.1rc1",
+      "default": "v0.6.1",
       "description": "Git ref of the OPC UA Gateway image to install"
     },
     "opcua-coordinator-version": {
       "type": "string",
-      "default": "v0.6.1rc1",
+      "default": "v0.6.1",
       "description": "Git ref of the OPC UA Coordinator image to install"
     },
     "useLocalSdk": {
