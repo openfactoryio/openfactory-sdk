@@ -190,7 +190,7 @@ If you're contributing to the SDK itself or developing Dev Container features, y
 
 ## Quick start
 
-0. Assurez vous d'avoir Docker d'installé. Aussi, pour pouvoir ouvrir OpenFactory sur une machine Windows, il faut d'abord s'assurer d'avoir WSL2. Le devcontainer doit être ouvert à partir d'un environnement Linux/Unix pour qu'il fonctionne (faites 'reopen in container' pour ouvrir le devcontainer).
+0. Assurez vous d'avoir Docker d'installé. Aussi, pour pouvoir ouvrir OpenFactory sur une machine Windows, il faut d'abord s'assurer d'avoir WSL2 (assurez vous de l'installer **séparément** de l'installation wsl docker afin d'avoir accès à l'environnement Ubuntu). Le devcontainer doit être ouvert à partir d'un environnement Linux/Unix pour qu'il fonctionne (faites 'reopen in container' pour ouvrir le devcontainer).
 
 1. Si OpenFactory était déjà ouvert précédemment et les containers n'ont pas pu fermer correctement, vous pouvez commencer par faire `teardown` et `opcua-connector-down` pour s'assurer de commencer avec un proejt clean.
 
