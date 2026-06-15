@@ -1,0 +1,53 @@
+# ---------------------------------------------------------------------------------------
+# 🏭 OpenFactory configuration file for the SHDR Connector
+#
+# Deploy with:
+#   ofa apps up app_shdr_connector.yml
+# ---------------------------------------------------------------------------------------
+# Environment variables:
+#
+# Optional:
+#   SHDR_COORDINATOR_LOG_LEVEL    Log level of coordinator (default: INFO)
+#   SHDR_GATEWAY_LOG_LEVEL        Log level of gateways (default: INFO)
+#
+# ---------------------------------------------------------------------------------------
+
+apps:
+
+  shdr-coordinator:
+    uuid: SHDR-COORDINATOR
+    image: ghcr.io/openfactoryio/shdr-coordinator:${SHDR_COORDINATOR_VERSION}
+    environment:
+      - LOG_LEVEL=${SHDR_COORDINATOR_LOG_LEVEL:-INFO}
+      - PROMETHEUS_DISABLE_CREATED_SERIES=true
+    routing:
+      expose: true
+      port: 4000
+      hostname: shdr-coordinator
+    networks:
+      - factory-net
+
+  shdr-gateway-1:
+    uuid: SHDR-GATEWAY-1
+    image: ghcr.io/openfactoryio/shdr-gateway:${SHDR_GATEWAY_VERSION}
+    environment:
+      - LOG_LEVEL=${SHDR_GATEWAY_LOG_LEVEL:-INFO}
+      - PROMETHEUS_DISABLE_CREATED_SERIES=true
+    routing:
+      expose: true
+      port: 4000
+      hostname: shdr-gateway-1
+    networks:
+      - factory-net
+
+  shdr-gateway-2:
+    uuid: SHDR-GATEWAY-2
+    image: ghcr.io/openfactoryio/shdr-gateway:${SHDR_GATEWAY_VERSION}
+    environment:
+      - LOG_LEVEL=${SHDR_GATEWAY_LOG_LEVEL:-INFO}
+    routing:
+      expose: true
+      port: 4000
+      hostname: shdr-gateway-2
+    networks:
+      - factory-net

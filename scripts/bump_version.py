@@ -178,9 +178,9 @@ def bump_infra_feature_version(version: str) -> None:
     print(f"[devcontainer-feature.json] openfactory-version.default updated: {old_default} → {data['options']['openfactory-version']['default']}")
 
 
-def bump_opcua_feature_version(version: str) -> None:
+def bump_connectors_feature_version(version: str) -> None:
     """
-    Update the version for the OPC UA Connector feature.
+    Update the version for the Connectors feature.
 
     If version is "0.0.0-dev", it sets opcua-connector-version.default to "latest".
     Otherwise, sets version and default tag based on the semantic version provided.
@@ -192,46 +192,66 @@ def bump_opcua_feature_version(version: str) -> None:
         SystemExit: If the JSON file is missing or required fields are not found.
     """
     json_path = (
-        Path(__file__).resolve().parent.parent /
-        ".devcontainer/features/opcua-connector/devcontainer-feature.json"
+        Path(__file__).resolve().parent.parent
+        / ".devcontainer/features/connectors/devcontainer-feature.json"
     )
 
     if not json_path.exists():
-        print("ERROR: devcontainer-feature.json (opcua-connector) not found.")
+        print("ERROR: devcontainer-feature.json (connectors) not found.")
         sys.exit(1)
 
     with json_path.open("r", encoding="utf-8") as f:
         data = json.load(f)
 
-    if "version" not in data or "options" not in data \
-       or "opcua-gateway-version" not in data["options"] \
-       or "opcua-coordinator-version" not in data["options"] \
-       or "default" not in data["options"]["opcua-gateway-version"] \
-       or "default" not in data["options"]["opcua-coordinator-version"]:
+    required_options = [
+        "shdr-gateway-version",
+        "shdr-coordinator-version",
+        "opcua-gateway-version",
+        "opcua-coordinator-version",
+    ]
+
+    if "version" not in data or "options" not in data:
         print("ERROR: Required fields missing in devcontainer-feature.json.")
         sys.exit(1)
 
+    for option in required_options:
+        if (
+            option not in data["options"]
+            or "default" not in data["options"][option]
+        ):
+            print(
+                f"ERROR: Required option '{option}.default' "
+                "missing in devcontainer-feature.json."
+            )
+            sys.exit(1)
+
     old_version = data["version"]
-    old_default_gateway = data["options"]["opcua-gateway-version"]["default"]
-    old_default_coordinator = data["options"]["opcua-coordinator-version"]["default"]
+
+    old_defaults = {
+        option: data["options"][option]["default"]
+        for option in required_options
+    }
 
     semver_version = pep440_to_semver(version)
     data["version"] = semver_version
 
-    if version.startswith("0.0.0-dev"):
-        data["options"]["opcua-gateway-version"]["default"] = "latest"
-        data["options"]["opcua-coordinator-version"]["default"] = "latest"
-    else:
-        data["options"]["opcua-gateway-version"]["default"] = f"v{version}"
-        data["options"]["opcua-coordinator-version"]["default"] = f"v{version}"
+    tag = "latest" if version.startswith("0.0.0-dev") else f"v{version}"
+
+    for option in required_options:
+        data["options"][option]["default"] = tag
 
     with json_path.open("w", encoding="utf-8") as f:
         json.dump(data, f, indent=2)
         f.write("\n")
 
-    print(f"[opcua-connector] version updated: {old_version} → {data['version']}")
-    print(f"[opcua-gateway] opcua-gateway-version.default updated: {old_default_gateway} → {data['options']['opcua-gateway-version']['default']}")
-    print(f"[opcua-coordinator] opcua-coordinator-version.default updated: {old_default_coordinator} → {data['options']['opcua-coordinator-version']['default']}")
+    print(f"[connectors] version updated: {old_version} → {data['version']}")
+
+    for option in required_options:
+        print(
+            f"[connectors] {option}.default updated: "
+            f"{old_defaults[option]} → "
+            f"{data['options'][option]['default']}"
+        )
 
 
 def bump_nfs_feature_version(version: str) -> None:
@@ -286,7 +306,7 @@ if __name__ == "__main__":
     new_version = sys.argv[1]
     final_version = bump_pyproject_version(new_version)
     bump_infra_feature_version(new_version)
-    bump_opcua_feature_version(new_version)
+    bump_connectors_feature_version(new_version)
     bump_nfs_feature_version(new_version)
 
     # print final version for workflow to capture
