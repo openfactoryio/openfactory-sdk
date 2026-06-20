@@ -18,9 +18,13 @@ fi
 
 echo "$EXPECTED_VERSION" > /usr/local/etc/openfactory_version
 
-echo "📁 Copying OPC UA Connector files..."
+echo "📁 Copying Connectors files..."
 mkdir -p "/usr/local/share/openfactory-connectors"
 cp -r "$(dirname "$0")/assets/." "/usr/local/share/openfactory-connectors"
+
+echo "📁 Copying Connectors Prometheus rules..."
+mkdir -p "/usr/local/share/openfactory-sdk/openfactory-infra/rules"
+cp -r "$(dirname "$0")/assets/prometheus_connector_rules.yml" "/usr/local/share/openfactory-sdk/openfactory-infra/rules"
 
 # Set environment variables
 echo "🛠️ Setting environment variables..."
