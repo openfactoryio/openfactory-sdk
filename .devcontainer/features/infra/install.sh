@@ -118,6 +118,8 @@ echo "🛠️ Adding helpful aliases to /etc/bash.bashrc..."
   echo 'alias ksql="docker exec -it ksqldb-cli ksql http://ksqldb-server:8088"'
   echo "alias spinup='/usr/local/bin/spinup.sh'"
   echo "alias teardown='/usr/local/bin/teardown.sh'"
+  echo "alias prometheus-up='docker compose -f /usr/local/share/openfactory-sdk/openfactory-infra/docker-compose.prometheus.yml -p prometheus up -d'"
+  echo "alias prometheus-down='docker compose -f /usr/local/share/openfactory-sdk/openfactory-infra/docker-compose.prometheus.yml -p prometheus down'"
 } >> /etc/bash.bashrc
 
 echo "✅ OpenFactory SDK setup complete."
