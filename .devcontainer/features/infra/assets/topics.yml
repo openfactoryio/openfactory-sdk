@@ -59,3 +59,12 @@ topics:
     replication: 1
     cleanup: compact
     comment: Source table for DEVICE_CONNECTOR_SOURCE / DEVICE_CONNECTOR
+
+  # ---------------------------------------------------------------------
+  # 004-metrics-registry.sql
+
+  - name: metrics_targets_topic
+    partitions: 1
+    replication: 1
+    cleanup: compact
+    comment: Source table for METRICS_TARGETS_SOURCE / METRICS_TARGETS
