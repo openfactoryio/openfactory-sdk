@@ -1,0 +1,87 @@
+# ------------------------------------------------------------------------------
+# Prometheus Monitoring Server (OpenFactory Metrics Collection)
+# ------------------------------------------------------------------------------
+# This Docker Compose service defines the central Prometheus server used by
+# OpenFactory to collect, store, and query operational metrics.
+#
+# Core Responsibilities:
+# - Discover OpenFactory metric endpoints dynamically
+# - Periodically scrape metrics from registered components
+# - Evaluate alerting and recording rules
+# - Provide a PromQL query interface and monitoring UI
+#
+# Metrics Discovery Model:
+# - OpenFactory components do not require static Prometheus configuration
+# - Scrape targets are discovered through the Metrics Registry service
+# - Prometheus periodically retrieves the current target list using
+#   HTTP Service Discovery (HTTP SD)
+#
+# Discovery Endpoint:
+#
+#     http://prometheus-metrics-registry:4000/prometheus/targets
+#
+# - The registry returns Prometheus-compatible target definitions
+# - New components become observable by registering themselves with the
+#   Metrics Registry
+# - Prometheus automatically refreshes the target list every 30 seconds
+#
+# Rule Management:
+# - Alerting and recording rules are loaded from:
+#
+#     /etc/prometheus/rules/*.yml
+#
+# - The host `./rules` directory is mounted into the container
+# - Any rule file placed in this directory is automatically loaded at startup
+#
+# Scraping Configuration:
+# - Metrics are collected every 15 seconds
+# - Rules are evaluated every 15 seconds
+# - Discovery information is refreshed every 30 seconds
+#
+# User Interface:
+#
+#     http://localhost:9090
+#
+# - Explore metrics and labels
+# - Execute PromQL queries
+# - Inspect active targets
+# - Review loaded rules and alerts
+#
+# Notes:
+# - OpenFactory uses Prometheus HTTP Service Discovery rather than
+#   static scrape target definitions
+# - Components can be added and removed without modifying prometheus.yml
+# - Rule file changes require a Prometheus reload or restart
+# - Prometheus is an external dependency (Apache License 2.0)
+# - The official Prometheus Docker image is pulled at runtime
+# - OpenFactory leverages Prometheus for platform observability and alerting
+#
+# Networking:
+# - Uses the external Docker network (`factory-net`)
+# - Requires connectivity to the Metrics Registry service
+# - Scrape targets must be reachable from the Prometheus container
+#
+# References:
+# - Prometheus Documentation: https://prometheus.io/docs/
+# - HTTP Service Discovery:
+#   https://prometheus.io/docs/prometheus/latest/http_sd/
+# - PromQL Documentation:
+#   https://prometheus.io/docs/prometheus/latest/querying/basics/
+# ------------------------------------------------------------------------------
+
+services:
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./rules:/etc/prometheus/rules
+    ports:
+      - "9090:9090"
+    networks:
+      - factory-net
+
+networks:
+  factory-net:
+    external: true
