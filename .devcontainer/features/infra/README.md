@@ -5,7 +5,8 @@ Installs a simulated OpenFactory infrastructure (Kafka Cluster and ksqlDB) in a 
 ## 🐳 Deploy OpenFactory Infrastructure in a Dev Container
 
 Once installed, the feature automatically sets up a simulated OpenFactory infrastructure inside your development environment
-including Treafik routing (with base domain `openfactory.local`).
+including Traefik routing (with base domain `openfactory.local`) and Prometheus metrics collection with
+auto-discovery of OpenFactory components.
 
 The simulated infrastructure can be deployed with:
 ```bash
@@ -22,7 +23,7 @@ This section describes how to configure the feature in your devcontainer dependi
 
 ### 1️⃣ OpenFactory Application Developers
 
-These developers are building OpenFactory applications for a specific OpenFactory version. 
+These developers are building OpenFactory applications for a specific OpenFactory version.
 They should **pin the SDK feature version** to match the OpenFactory version running in their factory.
 
 Example:
@@ -58,7 +59,6 @@ Example:
 
 > 📝 **Note:** The latest development version of the SDK feature can be found [here](https://github.com/openfactoryio/openfactory-sdk/pkgs/container/openfactory-sdk%2Finfra).
 
-
 ### ⚙️ Optional Settings
 
 For advanced use cases, the feature also exposes the following optional settings:
@@ -91,9 +91,11 @@ For advanced use cases, the feature also exposes the following optional settings
 
 * Add these shell aliases:
   ```
-  ksql      – launch the ksqlDB CLI
-  spinup    – start infrastructure with Docker Compose
-  teardown  – tear down the infrastructure
+  spinup           – start infrastructure with Docker Compose
+  teardown         – tear down the infrastructure
+  ksql             – launch the ksqlDB CLI
+  prometheus-up    – start Prometheus
+  prometheus-down  – stop Prometheus
   ```
 
   The environment variables and aliases are available in every Bash terminal inside your dev container.
@@ -106,6 +108,43 @@ For advanced use cases, the feature also exposes the following optional settings
   ```bash
   ofa --help
   ```
+
+## 📊 Access OpenFactory Monitoring Layer (Prometheus)
+
+Prometheus is automatically deployed as part of the OpenFactory infrastructure and configured to automatically discover OpenFactory components and collect their metrics.
+
+Once the infrastructure is running (after `spinup`) Prometheus is available at:
+```bash
+http://localhost:9090
+```
+
+OpenFactory uses automatic service discovery (via the OpenFactory Metrics Registry), so components are discovered and monitored automatically as they are deployed. No manual Prometheus scrape configuration is required.
+
+You can use the Prometheus UI to:
+
+* Explore collected metrics
+* Run PromQL queries
+* Inspect discovered targets
+* Verify that OpenFactory components are exporting metrics
+
+### 📝 Adding Custom Prometheus Rules
+
+When developing new OpenFactory components, you can add custom Prometheus alerting and recording rules by placing rule files in:
+
+```text
+/usr/local/share/openfactory-sdk/openfactory-infra/rules
+```
+
+> 📝 **Note:** You may need root privileges inside the dev container to modify this directory (use `sudo` if required).
+
+All `*.yml` files in this directory are automatically loaded by Prometheus when it starts.
+
+After adding or modifying rule files, restart Prometheus for the changes to take effect:
+
+```bash
+prometheus-down
+prometheus-up
+```
 
 ## 🌐 Access Applications API (Traefik Routing)
 
@@ -157,9 +196,9 @@ Example:
 ```bash
 http://localhost/demo-fastapi-app/docs
 ```
-The Traefik dahsboard itself is accesible via
+The Traefik dashboard itself is accessible via
 ```bash
-http://loalhost/dashboard/
+http://localhost/dashboard/
 ```
 
 ## ⚙️ How it works
@@ -207,3 +246,23 @@ Set this in `.devcontainer/devcontainer.json`:
 ```
 
 > ⚠️ The local SDK path (`/workspaces/openfactory-sdk`) is only available **after** the container starts — so editable installs must happen via `postCreateCommand` or `postStartCommand`, not inside the feature itself.
+
+### 📈 Providing Prometheus Rules
+
+Feature developers can ship Prometheus alerting and recording rules as part of their feature.
+
+During installation, copy rule files into:
+
+```bash
+/usr/local/share/openfactory-sdk/openfactory-infra/rules
+```
+
+Example:
+
+```bash
+mkdir -p "/usr/local/share/openfactory-sdk/openfactory-infra/rules"
+cp prometheus_connector_rules.yml \
+   "/usr/local/share/openfactory-sdk/openfactory-infra/rules"
+```
+
+Any `*.yml` files in this directory are automatically loaded by Prometheus when the infrastructure starts.
