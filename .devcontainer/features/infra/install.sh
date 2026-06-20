@@ -52,14 +52,21 @@ else
   EFFECTIVE_VERSION="${OPENFACTORY_VERSION}"
 fi
 
-# Install fan-out-layer
-echo "📁 Copying fan-out-layer files"
-ofa templates copy fanoutlayer /usr/local/share/openfactory-sdk/openfactory-fanoutlayer/
+# Install Prometheus Metrics Registry App
+echo "📁 Copying OpenFactory Prometheus Metrics Registry files"
+mkdir -p "/usr/local/share/openfactory-sdk/openfactory-infra/monitoring"
+cp "$(dirname "$0")/assets/app_prometheus_metrics_registry.yml" "/usr/local/share/openfactory-sdk/openfactory-infra/monitoring"
+
+# Install asset-forwarder
+echo "📁 Copying asset-forwarder configuration file"
+mkdir -p "/usr/local/share/openfactory-sdk/openfactory-infra/fanoutlayer"
+cp "$(dirname "$0")/assets/app_asset_forwarder.yml" "/usr/local/share/openfactory-sdk/openfactory-infra/fanoutlayer/"
 
 # Write install-time variables
 echo "export OPENFACTORY_VERSION=\"${OPENFACTORY_VERSION}\"" > /etc/profile.d/00-openfactory-sdk.sh
 echo "export ASSET_FORWARDER_VERSION=\"${EFFECTIVE_VERSION}\"" >> /etc/profile.d/00-openfactory-sdk.sh
 echo "export ASSET_ROUTER_VERSION=\"${EFFECTIVE_VERSION}\"" >> /etc/profile.d/00-openfactory-sdk.sh
+echo "export PROMETHEUS_METRICS_REGISTRY_VERSION=\"${EFFECTIVE_VERSION}\"" >> /etc/profile.d/00-openfactory-sdk.sh
 echo "export OPENFACTORY_BASE_DOMAIN=\"openfactory.local\"" >> /etc/profile.d/00-openfactory-sdk.sh
 echo "export OPENFACTORY_ENV=\"dev\"" >> /etc/profile.d/00-openfactory-sdk.sh
 
@@ -111,6 +118,8 @@ echo "🛠️ Adding helpful aliases to /etc/bash.bashrc..."
   echo 'alias ksql="docker exec -it ksqldb-cli ksql http://ksqldb-server:8088"'
   echo "alias spinup='/usr/local/bin/spinup.sh'"
   echo "alias teardown='/usr/local/bin/teardown.sh'"
+  echo "alias prometheus-up='docker compose -f /usr/local/share/openfactory-sdk/openfactory-infra/docker-compose.prometheus.yml -p prometheus up -d'"
+  echo "alias prometheus-down='docker compose -f /usr/local/share/openfactory-sdk/openfactory-infra/docker-compose.prometheus.yml -p prometheus down'"
 } >> /etc/bash.bashrc
 
 echo "✅ OpenFactory SDK setup complete."

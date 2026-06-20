@@ -1,0 +1,73 @@
+# ------------------------------------------------------------------------------
+# OpenFactory Prometheus Configuration
+# ------------------------------------------------------------------------------
+# This configuration defines how Prometheus discovers OpenFactory components,
+# collects metrics, and evaluates monitoring rules.
+#
+# Discovery Model:
+# - OpenFactory uses Prometheus HTTP Service Discovery (HTTP SD)
+# - Prometheus retrieves scrape targets from the Metrics Registry service
+# - Individual components do not need to be declared statically in this file
+# - Components become observable by registering with the Metrics Registry
+#
+# Discovery Flow:
+#
+#     Component
+#         ↓
+#     Metrics Registry
+#         ↓
+#     HTTP Service Discovery
+#         ↓
+#     Prometheus
+#
+# Metrics Registry Endpoint:
+#
+#     http://prometheus-metrics-registry:4000/prometheus/targets
+#
+# - Returns Prometheus-compatible target definitions
+# - Refreshed every 30 seconds
+# - Allows dynamic addition and removal of monitored components
+#
+# Rule Management:
+# - Alerting and recording rules are loaded from:
+#
+#     /etc/prometheus/rules/*.yml
+#
+# - All matching rule files are loaded automatically at startup
+# - The corresponding host directory is mounted through Docker Compose
+# - Rule changes require a Prometheus reload or restart
+#
+# Collection Behavior:
+# - Metrics are scraped every 15 seconds
+# - Rules are evaluated every 15 seconds
+# - Discovery information is refreshed every 30 seconds
+#
+# Notes:
+# - This file intentionally contains minimal static configuration
+# - OpenFactory monitoring relies on dynamic service discovery
+# - Additional jobs may be added in the future for external systems
+#   or infrastructure monitoring
+#
+# References:
+# - Prometheus Configuration:
+#   https://prometheus.io/docs/prometheus/latest/configuration/configuration/
+# - HTTP Service Discovery:
+#   https://prometheus.io/docs/prometheus/latest/http_sd/
+# ------------------------------------------------------------------------------
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+# Include rules
+rule_files:
+  - "/etc/prometheus/rules/*.yml"
+
+# Include component-specific scrape configs
+scrape_configs:
+
+  - job_name: openfactory
+
+    http_sd_configs:
+      - url: http://prometheus-metrics-registry:4000/prometheus/targets
+        refresh_interval: 30s
