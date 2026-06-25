@@ -14,7 +14,7 @@
 #       *.openfactory.local → CONTAINER_IP
 # - Preserves existing upstream DNS servers from /etc/resolv.conf
 # - Starts dnsmasq (idempotent, safe to run multiple times)
-# - Updates /etc/resolv.conf to use local DNS (127.0.0.1)
+# - Configures /etc/resolv.conf to use dnsmasq via CONTAINER_IP
 #
 # Why:
 # - Enables URLs like:
@@ -30,6 +30,7 @@
 # Notes:
 # - Designed for devcontainer environments (not production)
 # - Avoids hardcoding public DNS (uses system-provided upstream DNS)
+# - dnsmasq listens on both 127.0.0.1 and CONTAINER_IP for Docker-in-Docker compatibility
 # - Safe to re-run (idempotent configuration)
 #
 # ------------------------------------------------------------------------------
@@ -64,16 +65,25 @@ fi
 # Create config directory
 $SUDO mkdir -p "$DNSMASQ_CONF_DIR"
 
-# Capture upstream DNS ----
-UPSTREAM_DNS=$(grep -E '^nameserver' /etc/resolv.conf | awk '{print $2}' | grep -v '^127\.0\.0\.1$')
+# Capture upstream DNS servers (excluding dnsmasq)
+UPSTREAM_DNS=$(
+  grep -E '^nameserver' /etc/resolv.conf \
+    | awk '{print $2}' \
+    | grep -vE "^(127\.0\.0\.1|${CONTAINER_IP})$"
+)
+
+if [ -z "$UPSTREAM_DNS" ]; then
+  echo "❌ [openfactory-sdk-startup.sh] No upstream DNS servers found."
+  exit 1
+fi
 
 # Write dnsmasq config (idempotent)
 $SUDO tee "$DNSMASQ_CONF_FILE" > /dev/null <<EOF
 # OpenFactory DNS
 address=/openfactory.local/${CONTAINER_IP}
 
-# Listen locally
-listen-address=127.0.0.1
+# Listen locally and on the container IP
+listen-address=127.0.0.1,${CONTAINER_IP}
 bind-interfaces
 
 # Forward everything else to upstream DNS
@@ -103,13 +113,13 @@ else
 fi
 
 # Update resolv.conf safely
-if ! grep -q "127.0.0.1" /etc/resolv.conf; then
+if ! grep -Fxq "nameserver ${CONTAINER_IP}" /etc/resolv.conf; then
   echo "🛠️ Updating /etc/resolv.conf..."
 
   $SUDO cp /etc/resolv.conf /etc/resolv.conf.openfactory.bak || true
 
   $SUDO tee /etc/resolv.conf > /dev/null <<EOF
-nameserver 127.0.0.1
+nameserver ${CONTAINER_IP}
 EOF
 
   echo "✅ resolv.conf updated"

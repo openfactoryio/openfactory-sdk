@@ -164,7 +164,7 @@ Example:
 curl http://demo-fastapi-app.openfactory.local/docs
 ```
 
-This works because the feature configures internal DNS using `dnsmasq`.
+This works because the feature automatically configures internal DNS using `dnsmasq`. No additional DNS configuration is required.
 
 ### 2️⃣ From your Host Machine (browser access)
 
