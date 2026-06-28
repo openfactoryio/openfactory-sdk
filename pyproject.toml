@@ -1,6 +1,6 @@
 [project]
 name = "openfactory-sdk"
-version = "0.6.2rc2"
+version = "0.6.3rc1"
 description = "A developer SDK for simulating and deploying apps on a local OpenFactory setup."
 requires-python = ">=3.12"
 dependencies = [
@@ -10,7 +10,7 @@ dependencies = [
 dev = [
     "flake8",
     "tomlkit",
-    "OpenFactory @ git+https://github.com/openfactoryio/openfactory-core.git@main",
+    "OpenFactory[fastapi] @ git+https://github.com/openfactoryio/openfactory-core.git@main",
     "MTCAdapters @ git+https://github.com/Demo-Smart-Factory-Concordia-University/MTCAdapters.git",
 ]
 

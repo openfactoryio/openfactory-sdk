@@ -1,0 +1,26 @@
+# ---------------------------------------------------------------------------------------
+# 🏭 OpenFactory configuration file for FastAPI-Demo-App 
+# ---------------------------------------------------------------------------------------
+# Environment variables:
+#
+# Optional:
+#   DEMO_APP_LOG_LEVEL       Log level (default: INFO)
+#
+# ---------------------------------------------------------------------------------------
+
+apps:
+
+  demo-app:
+    uuid: DEMO-FASTAPI-APP
+    image: demo-fastapi-app
+    environment:
+      - LOG_LEVEL=${DEMO_APP_LOG_LEVEL:-DEBUG}
+    metrics:
+      port: 4000
+      path: /metrics
+    routing:
+      expose: true
+      port: 4000
+      hostname: demo-fastapi-app
+    networks:
+      - factory-net
