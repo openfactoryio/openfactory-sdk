@@ -1,6 +1,6 @@
 {
   "id": "nfs-server",
-  "version": "0.6.5-rc.1",
+  "version": "0.6.5-rc.2",
   "name": "OpenFactory NFS Server",
   "description": "Provides a mocked NFS server suitable for the OpenFactory SDK.",
   "options": {
