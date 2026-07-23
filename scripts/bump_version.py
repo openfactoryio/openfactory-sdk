@@ -298,6 +298,50 @@ def bump_nfs_feature_version(version: str) -> None:
     print(f"[nfs-server] version updated: {old_version} → {data['version']}")
 
 
+def bump_grafana_feature_version(version: str) -> None:
+    """
+    Update the version for the Grafana feature.
+
+    If version is "dev", it transforms the current version to "<base>-dev.1".
+    Otherwise, sets the feature version based on the semantic version provided.
+
+    Args:
+        version (str): The new version string, e.g., "0.5.4" or "dev".
+
+    Raises:
+        SystemExit: If the JSON file is missing or required fields are not found.
+    """
+    json_path = (
+        Path(__file__).resolve().parent.parent /
+        ".devcontainer/features/grafana/devcontainer-feature.json"
+    )
+
+    if not json_path.exists():
+        print("ERROR: devcontainer-feature.json (grafana) not found.")
+        sys.exit(1)
+
+    with json_path.open("r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    if "version" not in data:
+        print("ERROR: Required fields missing in grafana devcontainer-feature.json.")
+        sys.exit(1)
+
+    old_version = data["version"]
+
+    if version == "dev":
+        base_version = old_version.split("-")[0]
+        data["version"] = f"{base_version}-dev.1"
+    else:
+        data["version"] = pep440_to_semver(version)
+
+    with json_path.open("w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2)
+        f.write("\n")
+
+    print(f"[nfs-server] version updated: {old_version} → {data['version']}")
+
+
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Usage: bump_version.py <new_version>")
@@ -308,6 +352,7 @@ if __name__ == "__main__":
     bump_infra_feature_version(new_version)
     bump_connectors_feature_version(new_version)
     bump_nfs_feature_version(new_version)
+    bump_grafana_feature_version(new_version)
 
     # print final version for workflow to capture
     print(final_version)

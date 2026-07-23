@@ -22,16 +22,29 @@
       "opcua-coordinator-version": "latest",
       "opcua-gateway-version": "latest"
     },
-    "./features/nfs-server": {}
+    "./features/nfs-server": {},
+    "./features/grafana": {}
   },
   "containerEnv": {
     "ENVIRONMENT": "local",
     "OPENFACTORY_UNS_SCHEMA": "/workspaces/openfactory-sdk/.devcontainer/uns.yml"
   },
-  "forwardPorts": [80],
+  "forwardPorts": [80, 3000, 9090, 12345],
   "portsAttributes": {
     "80": {
       "label": "Traefik",
+      "onAutoForward": "openBrowser"
+    },
+    "3000": {
+      "label": "Grafana",
+      "onAutoForward": "openBrowser"
+    },
+    "9090": {
+      "label": "Prometheus",
+      "onAutoForward": "openBrowser"
+    },
+    "12345": {
+      "label": "Grafana Alloy",
       "onAutoForward": "openBrowser"
     }
   },

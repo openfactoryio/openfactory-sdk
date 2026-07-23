@@ -1,0 +1,101 @@
+# ------------------------------------------------------------------------------
+# 📊 Grafana Visualization Platform (OpenFactory Monitoring Dashboards)
+# ------------------------------------------------------------------------------
+# This Docker Compose service deploys Grafana, the primary visualization and
+# dashboard platform used by OpenFactory.
+#
+# Core Responsibilities:
+# - Visualize metrics collected by Prometheus
+# - Provide interactive dashboards for infrastructure and applications
+# - Explore metrics using PromQL through Grafana Explore
+# - Manage dashboards, users, folders, and alerting
+#
+# Data Sources:
+# - Prometheus serves as the primary metrics backend
+# - Additional data sources (e.g. Loki or Tempo) may be added in the future
+# - Data sources are provisioned automatically at startup
+#
+# Dashboard Provisioning:
+# - Dashboards are loaded from:
+#
+#     /etc/grafana/provisioning/dashboards
+#
+# - Provisioning configuration and dashboard definitions are mounted from
+#   the host file system
+# - Dashboards become available automatically when Grafana starts
+#
+# Persistence:
+# - Grafana stores its internal SQLite database in the persistent Docker
+#   volume (`grafana-data`)
+# - The database contains:
+#
+#   - Users
+#   - Organizations
+#   - Dashboard definitions
+#   - Alert rules
+#   - Preferences
+#
+# User Interface:
+#
+#     http://localhost:3000
+#
+# Default Credentials:
+#
+#     Username: admin
+#     Password: admin
+#
+# (These credentials should be changed for production deployments.)
+#
+# Networking:
+# - Uses the external Docker network (`factory-net`)
+# - Connects to Prometheus and other monitoring backends over the shared
+#   monitoring network
+#
+# Notes:
+# - Grafana does not store monitoring metrics
+# - Metrics remain in Prometheus
+# - Grafana provides visualization, exploration, dashboards, and alerting
+# - Configuration is provisioned automatically during container startup
+# - The official Grafana Docker image is pulled at runtime
+#
+# References:
+# - Grafana Documentation:
+#   https://grafana.com/docs/
+# - Grafana Provisioning:
+#   https://grafana.com/docs/grafana/latest/administration/provisioning/
+# ------------------------------------------------------------------------------
+
+services:
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+
+    ports:
+      - "3000:3000"
+
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+
+    volumes:
+      # Persist Grafana database (users, dashboards, etc.)
+      - grafana-data:/var/lib/grafana
+
+      # Provision datasources
+      - ./provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+
+      # Provision dashboards
+      - ./provisioning/dashboards:/etc/grafana/provisioning/dashboards
+
+    restart: unless-stopped
+
+    networks:
+      - factory-net
+
+volumes:
+  grafana-data:
+
+networks:
+  factory-net:
+    external: true

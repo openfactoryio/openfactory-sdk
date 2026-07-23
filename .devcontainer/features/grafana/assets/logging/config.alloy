@@ -1,0 +1,124 @@
+// -----------------------------------------------------------------------------
+// OpenFactory Container Log Collection
+// -----------------------------------------------------------------------------
+// This configuration defines the Grafana Alloy pipeline used to collect logs
+// from Docker containers running on an OpenFactory host and forward them to
+// Grafana Loki.
+//
+// Log Flow:
+//
+//     Docker Containers
+//           |
+//           v
+//     discovery.docker
+//           |
+//           v
+//     discovery.relabel
+//           |
+//           v
+//     loki.source.docker
+//           |
+//           v
+//       loki.write
+//           |
+//           v
+//          Loki
+//
+// Each Alloy instance runs on one Docker Swarm node and accesses the local
+// Docker daemon through the mounted Docker socket.
+//
+// Container logs may contain either plain text or structured JSON. Alloy
+// forwards both formats to Loki without requiring applications to interact
+// directly with Alloy or Loki.
+// -----------------------------------------------------------------------------
+
+
+// -----------------------------------------------------------------------------
+// Docker Container Discovery
+// -----------------------------------------------------------------------------
+// Discovers containers running on the local Docker host.
+//
+// Docker exposes metadata for each discovered container through internal
+// `__meta_docker_*` labels. These labels are available during discovery but
+// are not automatically retained as Loki labels.
+//
+// The Docker socket is mounted into the Alloy container by the logging stack.
+// -----------------------------------------------------------------------------
+
+discovery.docker "containers" {
+  host = "unix:///var/run/docker.sock"
+}
+
+
+// -----------------------------------------------------------------------------
+// Docker Metadata Labels
+// -----------------------------------------------------------------------------
+// Converts selected Docker discovery metadata into persistent labels attached
+// to collected log streams.
+//
+// Labels:
+// - `container`: Docker container name
+// - `service`:   Docker Swarm service name
+// - `node_id`:   Docker Swarm node identifier
+//
+// Only stable infrastructure metadata is promoted to labels. Application-level
+// values such as asset UUIDs, measurements, counters, or other contextual log
+// fields remain part of the log entry to avoid creating high-cardinality Loki
+// labels.
+// -----------------------------------------------------------------------------
+
+discovery.relabel "docker_logs" {
+  targets = discovery.docker.containers.targets
+
+  rule {
+    source_labels = ["__meta_docker_container_name"]
+    regex         = "/(.*)"
+    target_label  = "container"
+  }
+
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_swarm_service_name"]
+    target_label  = "service"
+  }
+
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_swarm_node_id"]
+    target_label  = "node_id"
+  }
+}
+
+
+
+// -----------------------------------------------------------------------------
+// Docker Log Collection
+// -----------------------------------------------------------------------------
+// Reads stdout and stderr logs from the discovered Docker containers.
+//
+// The relabeled discovery targets provide both the containers to monitor and
+// the metadata labels attached to their log streams.
+//
+// Collected log entries are forwarded to the local `loki.write` component.
+// -----------------------------------------------------------------------------
+
+loki.source.docker "containers" {
+  host       = "unix:///var/run/docker.sock"
+  targets    = discovery.relabel.docker_logs.output
+  forward_to = [loki.write.local.receiver]
+}
+
+
+// -----------------------------------------------------------------------------
+// Loki Output
+// -----------------------------------------------------------------------------
+// Forwards collected log entries to the centralized Loki service.
+//
+// Loki is reachable through the shared `factory-net` Docker network using its
+// Docker service name `loki`. The Loki HTTP port does not need to be published
+// on the Docker hosts.
+// -----------------------------------------------------------------------------
+
+loki.write "local" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+}
