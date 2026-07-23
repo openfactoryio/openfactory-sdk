@@ -1,0 +1,151 @@
+
+# ------------------------------------------------------------------------------
+# 📝 Logging Infrastructure (OpenFactory Container Log Collection)
+# ------------------------------------------------------------------------------
+# This Docker Compose project deploys the logging infrastructure used to collect,
+# store, and query logs produced by containers running on the OpenFactory Cluster.
+#
+# Purpose:
+# - Discover Docker containers running on OpenFactory hosts
+# - Collect container logs from every Docker Swarm node
+# - Attach Docker and Docker Swarm metadata to collected logs
+# - Forward collected logs to a centralized log store
+# - Store logs for querying and visualization through Grafana
+#
+# Components:
+#
+# Grafana Alloy
+# -------------
+# Collects logs produced by Docker containers running on each OpenFactory host.
+#
+# Alloy discovers containers through the local Docker daemon and reads their
+# stdout and stderr log streams.
+#
+# The Alloy pipeline is configured in:
+#
+#     config.alloy
+#
+# The configuration defines:
+#
+# - Docker container discovery
+# - Docker and Docker Swarm metadata relabeling
+# - Docker log collection
+# - Forwarding of collected logs to Loki
+#
+# Alloy runs as a Docker Swarm Global service. Each Swarm node therefore runs
+# one Alloy instance, which collects logs from containers running on that node.
+#
+# Loki
+# ----
+# Provides centralized storage and querying of logs collected by Alloy.
+#
+# All Alloy instances forward collected logs to the Loki service over the
+# shared `factory-net` network.
+#
+# Loki stores its data in the persistent `loki-data` Docker volume.
+#
+# Grafana connects to Loki as a data source and provides log exploration,
+# filtering, querying, and visualization.
+#
+# Deployment Model:
+# - Alloy runs in Global mode
+# - Every Docker Swarm node automatically receives one Alloy instance
+# - Each Alloy instance collects logs from containers on its local Docker host
+# - Loki runs as a single centralized service
+# - All Alloy instances forward collected logs to Loki
+#
+# Log Flow:
+#
+#     Docker Containers
+#           |
+#           v
+#     Grafana Alloy
+#           |
+#           v
+#         Loki
+#           |
+#           v
+#        Grafana
+#
+# Networking:
+# - Uses the external Docker network (`factory-net`)
+# - Alloy sends collected logs to Loki over the shared network
+# - Grafana accesses Loki over the shared network
+# - Loki does not need to expose a host port
+#
+# Exposed Endpoints:
+#
+# Grafana Alloy:
+#     http://<host>:12345
+#
+# The Alloy HTTP endpoint provides its operational and debugging UI.
+#
+# Loki:
+#     http://loki:3100
+#
+# Loki is accessible internally through `factory-net`. Its port is not
+# published to the Docker hosts.
+#
+# Persistence:
+# - Loki stores log data in the `loki-data` Docker volume
+# - Alloy does not provide persistent log storage
+#
+# Notes:
+# - Alloy reads container logs through the local Docker socket
+# - The Docker socket is mounted read-only into the Alloy container
+# - Plain-text and structured JSON container logs can both be collected
+# - OpenFactory Apps require no direct connection to Alloy or Loki
+# - The OpenFactory logging backend is selected at deployment time
+# - Grafana uses Loki as a data source to query and visualize collected logs
+#
+# References:
+# - Grafana Alloy:
+#   https://grafana.com/docs/alloy/
+# - Grafana Loki:
+#   https://grafana.com/docs/loki/
+# ------------------------------------------------------------------------------
+
+services:
+
+  alloy:
+    image: grafana/alloy:latest
+    hostname: "{{.Node.Hostname}}"
+    command:
+      - "run"
+      - "--server.http.listen-addr=0.0.0.0:12345"
+      - "/etc/alloy/config.alloy"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./config.alloy:/etc/alloy/config.alloy:ro
+    networks:
+      - factory-net
+    ports:
+      - target: 12345
+        published: 12345
+        protocol: tcp
+        mode: host
+    deploy:
+      mode: global
+      restart_policy:
+        condition: any
+
+  loki:
+    image: grafana/loki:latest
+    command:
+      - "-config.file=/etc/loki/loki-config.yaml"
+    volumes:
+      - ./loki-config.yaml:/etc/loki/loki-config.yaml:ro
+      - loki-data:/loki
+    networks:
+      - factory-net
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+
+volumes:
+  loki-data:
+
+networks:
+  factory-net:
+    external: true

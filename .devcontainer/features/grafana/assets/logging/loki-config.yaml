@@ -1,0 +1,115 @@
+# ------------------------------------------------------------------------------
+# Grafana Loki Configuration
+# ------------------------------------------------------------------------------
+# This configuration defines the centralized log storage used by the
+# OpenFactory logging infrastructure.
+#
+# Grafana Alloy instances running on the Docker Swarm nodes collect container
+# logs and forward them to this Loki instance.
+#
+# Loki stores log data on the local filesystem backed by the persistent
+# `loki-data` Docker volume defined by the logging stack.
+#
+# Deployment Model:
+# - A single Loki instance is deployed
+# - Authentication is disabled because Loki is only accessible through the
+#   internal `factory-net` Docker network
+# - Log chunks and indexes are stored using local filesystem storage
+# - The Loki data directory is persisted using a Docker volume
+#
+# Log Flow:
+#
+#     Docker Containers
+#           |
+#           v
+#     Grafana Alloy
+#           |
+#           v
+#          Loki
+#           |
+#           v
+#        Grafana
+#
+# This configuration is intended for the current single-instance OpenFactory
+# logging deployment. A distributed or highly available Loki deployment would
+# require a different storage and replication configuration.
+# ------------------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------------------
+# Authentication
+# ------------------------------------------------------------------------------
+# Disables Loki multi-tenant authentication.
+#
+# Loki is not exposed directly outside the OpenFactory Docker network. Access
+# is provided internally to services such as Grafana and Grafana Alloy through
+# the shared `factory-net` network.
+# ------------------------------------------------------------------------------
+auth_enabled: false
+
+
+# ------------------------------------------------------------------------------
+# HTTP Server
+# ------------------------------------------------------------------------------
+# Loki listens on its standard HTTP port 3100.
+#
+# Alloy uses this endpoint to push logs and Grafana uses it to query logs.
+# The port is available internally through the Docker service name:
+#
+#     http://loki:3100
+# ------------------------------------------------------------------------------
+server:
+  http_listen_port: 3100
+
+
+# ------------------------------------------------------------------------------
+# Common Configuration
+# ------------------------------------------------------------------------------
+# Defines storage and replication settings shared by Loki components.
+#
+# `path_prefix` defines the base directory used by Loki for local data.
+#
+# Log chunks and ruler data are stored below `/loki`, which is backed by the
+# persistent `loki-data` Docker volume.
+#
+# A replication factor of 1 is used because the current deployment contains
+# a single Loki instance.
+#
+# The ring uses an in-memory key-value store, which is sufficient for this
+# single-instance deployment.
+# ------------------------------------------------------------------------------
+common:
+  path_prefix: /loki
+  storage:
+    filesystem:
+      chunks_directory: /loki/chunks
+      rules_directory: /loki/rules
+  replication_factor: 1
+  ring:
+    kvstore:
+      store: inmemory
+
+
+# ------------------------------------------------------------------------------
+# Storage Schema
+# ------------------------------------------------------------------------------
+# Defines how Loki stores and indexes log data.
+#
+# TSDB is used as the index store together with Loki schema version 13.
+# Log data is stored using the filesystem storage configured above.
+#
+# The `from` date defines when this schema configuration becomes applicable.
+# It must be a date in the past for a new deployment.
+#
+# Index data is organized using the `index_` prefix with a 24-hour index
+# period.
+# ------------------------------------------------------------------------------
+schema_config:
+  configs:
+    - from: 2024-01-01
+      store: tsdb
+      object_store: filesystem
+      schema: v13
+      index:
+        prefix: index_
+        period: 24h

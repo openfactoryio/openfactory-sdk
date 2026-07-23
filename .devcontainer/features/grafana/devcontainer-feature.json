@@ -1,0 +1,9 @@
+{
+  "id": "grafana",
+  "version": "0.6.5-rc.1",
+  "name": "OpenFactory Grafana",
+  "description": "Installs Grafana for OpenFactory",
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/common-utils"
+  ]
+}
