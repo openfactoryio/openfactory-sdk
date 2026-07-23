@@ -6,6 +6,9 @@ requires-python = ">=3.12"
 dependencies = [
 ]
 
+[tool.setuptools]
+packages = []
+
 [project.optional-dependencies]
 dev = [
     "flake8",
