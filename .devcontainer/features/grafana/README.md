@@ -18,6 +18,8 @@ Stop the Grafana services:
 grafana-down
 ```
 
+Note: The intial loggin / password for Grafana is: `admin` / `admin`.
+
 ## 📝 Deploy Logging
 
 The feature also provides centralized logging using Loki and Alloy.
