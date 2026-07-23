@@ -1,6 +1,6 @@
 {
   "id": "grafana",
-  "version": "0.6.5-rc.3",
+  "version": "0.6.5",
   "name": "OpenFactory Grafana",
   "description": "Installs Grafana for OpenFactory",
   "installsAfter": [
