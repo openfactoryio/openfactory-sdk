@@ -20,34 +20,16 @@ apps:
     environment:
       - LOG_LEVEL=${SHDR_COORDINATOR_LOG_LEVEL:-INFO}
       - PROMETHEUS_DISABLE_CREATED_SERIES=true
-    routing:
-      expose: true
-      port: 4000
-      hostname: shdr-coordinator
     networks:
       - factory-net
 
-  shdr-gateway-1:
-    uuid: SHDR-GATEWAY-1
+  shdr-gateway:
+    uuid: SHDR-GATEWAY
     image: ghcr.io/openfactoryio/shdr-gateway:${SHDR_GATEWAY_VERSION}
     environment:
       - LOG_LEVEL=${SHDR_GATEWAY_LOG_LEVEL:-INFO}
       - PROMETHEUS_DISABLE_CREATED_SERIES=true
-    routing:
-      expose: true
-      port: 4000
-      hostname: shdr-gateway-1
-    networks:
-      - factory-net
-
-  shdr-gateway-2:
-    uuid: SHDR-GATEWAY-2
-    image: ghcr.io/openfactoryio/shdr-gateway:${SHDR_GATEWAY_VERSION}
-    environment:
-      - LOG_LEVEL=${SHDR_GATEWAY_LOG_LEVEL:-INFO}
-    routing:
-      expose: true
-      port: 4000
-      hostname: shdr-gateway-2
+    deploy:
+      replicas: ${SHDR_GATEWAY_REPLICAS:-2}
     networks:
       - factory-net
