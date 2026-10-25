@@ -20,36 +20,16 @@ apps:
     environment:
       - LOG_LEVEL=${OPCUA_COORDINATOR_LOG_LEVEL:-INFO}
       - PROMETHEUS_DISABLE_CREATED_SERIES=true
-    routing:
-      expose: true
-      port: 4000
-      hostname: opcua-coordinator
     networks:
       - factory-net
 
-
-  opcua-gateway-1:
-    uuid: OPCUA-GATEWAY-1
+  opcua-gateway:
+    uuid: OPCUA-GATEWAY
     image: ghcr.io/openfactoryio/opcua-gateway:${OPCUA_GATEWAY_VERSION}
     environment:
       - LOG_LEVEL=${OPCUA_GATEWAY_LOG_LEVEL:-INFO}
       - PROMETHEUS_DISABLE_CREATED_SERIES=true
-    routing:
-      expose: true
-      port: 4000
-      hostname: opcua-gateway-1
-    networks:
-      - factory-net
-
-  opcua-gateway-2:
-    uuid: OPCUA-GATEWAY-2
-    image: ghcr.io/openfactoryio/opcua-gateway:${OPCUA_GATEWAY_VERSION}
-    environment:
-      - LOG_LEVEL=${OPCUA_GATEWAY_LOG_LEVEL:-INFO}
-      - PROMETHEUS_DISABLE_CREATED_SERIES=true
-    routing:
-      expose: true
-      port: 4000
-      hostname: opcua-gateway-2
+    deploy:
+      replicas: ${OPCUA_GATEWAY_REPLICAS:-2}
     networks:
       - factory-net
