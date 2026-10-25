@@ -27,7 +27,9 @@
   },
   "containerEnv": {
     "ENVIRONMENT": "local",
-    "OPENFACTORY_UNS_SCHEMA": "/workspaces/openfactory-sdk/.devcontainer/uns.yml"
+    "OPENFACTORY_UNS_SCHEMA": "/workspaces/openfactory-sdk/.devcontainer/uns.yml",
+    "OPCUA_GATEWAY_REPLICAS": "2",
+    "SHDR_GATEWAY_REPLICAS": "2"
   },
   "forwardPorts": [80, 3000, 9090, 12345],
   "portsAttributes": {
