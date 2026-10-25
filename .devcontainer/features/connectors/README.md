@@ -84,8 +84,10 @@ Example configuration:
 * Defines the following environment variables:
   ```bash
   OPCUA_GATEWAY_VERSION="<version>"
+  OPCUA_GATEWAY_REPLICAS="2"
   OPCUA_COORDINATOR_VERSION="<version>"
   SHDR_GATEWAY_VERSION="<version>"
+  SHDR_GATEWAY_REPLICAS="2"
   SHDR_COORDINATOR_VERSION="<version>"
   ```
   where `<version>` is set from the corresponding feature options in your `devcontainer.json`.
@@ -97,6 +99,26 @@ Example configuration:
   opcua-connector-up    # Launch the OPC UA Connector
   opcua-connector-down  # Stop the OPC UA Connector
   ```
+
+## 🔁 Gateway Replicas
+
+The number of gateway replicas for each connector is controlled by the environment variable `<CONNECTOR>_GATEWAY_REPLICAS`, where `<CONNECTOR>` is the connector type (`OPCUA` or `SHDR`).
+
+By default, each connector deploys **2 gateway replicas**.
+
+For example, to deploy the OPC UA Connector with three gateway replicas:
+
+```bash
+OPCUA_GATEWAY_REPLICAS=3 opcua-connector-up
+```
+
+Similarly, to deploy the SHDR Connector with a single gateway:
+
+```bash
+SHDR_GATEWAY_REPLICAS=1 shdr-connector-up
+```
+
+These environment variables allow you to override the default replica count when deploying a connector.
 
 ## 📝 Connector Logging
 
